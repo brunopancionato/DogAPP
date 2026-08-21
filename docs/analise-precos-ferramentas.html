@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Comparativo de preços de ferramentas de gestão para creches, hotéis e daycares pet.">
+  <title>CãoMetria — Preços de ferramentas para creches pet</title>
+  <style>
+    :root {
+      --paper: #f4f4f0;
+      --surface: #ffffff;
+      --surface-2: #fafaf7;
+      --ink: #191b1f;
+      --ink-soft: #565a61;
+      --ink-faint: #858b91;
+      --line: #e3e4de;
+      --line-strong: #cfd2ca;
+      --brand: #0b5d5d;
+      --brand-ink: #083f3f;
+      --brand-tint: #e7f0f0;
+      --green: #2e9e5b;
+      --green-tint: #e6f4ec;
+      --amber: #c98a0e;
+      --amber-tint: #fbf1dd;
+      --gray-tint: #eef0ed;
+      --shadow: 0 1px 2px rgba(20, 22, 26, .04), 0 12px 34px rgba(20, 22, 26, .07);
+      --font: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      --mono: "Consolas", "SFMono-Regular", ui-monospace, monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #0f1113;
+        --surface: #17191c;
+        --surface-2: #1c1f22;
+        --ink: #eceeeb;
+        --ink-soft: #a4a9ae;
+        --ink-faint: #73797e;
+        --line: #2a2d31;
+        --line-strong: #3a3e43;
+        --brand: #55b7b7;
+        --brand-ink: #9cdddd;
+        --brand-tint: #183537;
+        --green: #55c27d;
+        --green-tint: #173520;
+        --amber: #e4ae4a;
+        --amber-tint: #3b2e14;
+        --gray-tint: #282c2f;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 16px 40px rgba(0, 0, 0, .3);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    ::selection { background: var(--brand); color: #fff; }
+
+    .page-shell { width: min(1420px, calc(100% - 40px)); margin: 0 auto; }
+    .hero { padding: 72px 0 42px; }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--brand);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+    }
+    h1 {
+      max-width: 850px;
+      margin: 18px 0 18px;
+      font-size: clamp(38px, 6vw, 76px);
+      line-height: .99;
+      letter-spacing: -.055em;
+      text-wrap: balance;
+    }
+    .lede {
+      max-width: 760px;
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.55;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .meta span, .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .meta .accent { border-color: var(--brand); background: var(--brand-tint); color: var(--brand-ink); }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 0 0 26px;
+    }
+    .summary-card {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .summary-label {
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .summary-value {
+      display: block;
+      margin: 8px 0 4px;
+      color: var(--brand-ink);
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+    }
+    .summary-note { color: var(--ink-soft); font-size: 13px; }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 28px 0 14px;
+    }
+    .toolbar-title { margin: 0; font-size: 20px; letter-spacing: -.02em; }
+    .toolbar-count { color: var(--ink-faint); font-size: 13px; }
+    .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+    .control {
+      min-height: 42px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--ink);
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    .control:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-tint); }
+    input.control { width: min(330px, 100%); padding: 0 13px; }
+    select.control { padding: 0 34px 0 12px; }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 940px; }
+    th, td { padding: 17px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--surface-2);
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: var(--surface-2); }
+    .tool-name { min-width: 190px; font-weight: 800; }
+    .tool-name a { color: var(--brand-ink); text-decoration: none; }
+    .tool-name a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .subline { display: block; margin-top: 4px; color: var(--ink-faint); font-size: 12px; font-weight: 500; }
+    .price { min-width: 300px; font-weight: 700; }
+    .price strong { display: block; font-size: 16px; }
+    .price small { display: block; margin-top: 4px; color: var(--ink-soft); font-weight: 400; line-height: 1.45; }
+    .note { min-width: 270px; color: var(--ink-soft); font-size: 14px; }
+    .source { white-space: nowrap; color: var(--brand); font-size: 13px; font-weight: 700; text-decoration: none; }
+    .source:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .tag.br { background: var(--green-tint); border-color: transparent; color: var(--green); }
+    .tag.int { background: var(--brand-tint); border-color: transparent; color: var(--brand-ink); }
+    .tag.ref { background: var(--gray-tint); border-color: transparent; color: var(--ink-soft); }
+    .tag.quote { background: var(--amber-tint); border-color: transparent; color: var(--amber); }
+    .empty { display: none; padding: 36px 20px; color: var(--ink-soft); text-align: center; }
+    .empty.show { display: block; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 28px 0 48px;
+      color: var(--ink-faint);
+      font-size: 12px;
+    }
+    footer p { max-width: 760px; margin: 0; }
+    .footer-mark { color: var(--brand); font-family: var(--mono); font-weight: 700; white-space: nowrap; }
+
+    @media (max-width: 900px) {
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .toolbar { align-items: flex-start; flex-direction: column; }
+      .filters { width: 100%; }
+      input.control { flex: 1; }
+    }
+    @media (max-width: 560px) {
+      .page-shell { width: min(100% - 28px, 1420px); }
+      .hero { padding: 42px 0 28px; }
+      h1 { font-size: 42px; }
+      .summary { grid-template-columns: 1fr; }
+      .filters { display: grid; grid-template-columns: 1fr; }
+      input.control, select.control { width: 100%; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="hero">
+      <div class="eyebrow">Benchmark de mercado · CãoMetria</div>
+      <h1>Quanto custa organizar uma creche pet?</h1>
+      <p class="lede">Mapa de preços de ferramentas para creches, hotéis, daycares e operações de cuidado animal. Os valores estão na moeda publicada por cada fornecedor.</p>
+      <div class="meta" aria-label="Escopo da pesquisa">
+        <span class="accent">16 sistemas pesquisados</span>
+        <span>2 referências</span>
+        <span>Atualizado em 21/08/2026</span>
+      </div>
+    </header>
+
+    <section class="summary" aria-label="Resumo de preços">
+      <article class="summary-card">
+        <span class="summary-label">Entrada Brasil</span>
+        <strong class="summary-value">R$84,90/mês</strong>
+        <span class="summary-note">SistemaPET, no plano anual</span>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Plano brasileiro</span>
+        <strong class="summary-value">R$99/mês</strong>
+        <span class="summary-note">HostMyPet Starter</span>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Opção gratuita</span>
+        <strong class="summary-value">R$0 / US$0</strong>
+        <span class="summary-note">HostMyPet e DoggieDashboard, com limites</span>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Sob consulta</span>
+        <strong class="summary-value">4 opções</strong>
+        <span class="summary-note">Milisa, Ledog, PetExec e brightwheel</span>
+      </article>
+    </section>
+
+    <section aria-labelledby="table-title">
+      <div class="toolbar">
+        <div>
+          <h2 id="table-title" class="toolbar-title">Lista comparativa</h2>
+          <span id="result-count" class="toolbar-count">18 itens</span>
+        </div>
+        <div class="filters" role="search">
+          <input id="search" class="control" type="search" placeholder="Buscar ferramenta..." aria-label="Buscar ferramenta">
+          <select id="region" class="control" aria-label="Filtrar por região">
+            <option value="all">Todas as regiões</option>
+            <option value="br">Brasil</option>
+            <option value="int">Exterior</option>
+            <option value="ref">Referência</option>
+          </select>
+          <select id="pricing" class="control" aria-label="Filtrar por tipo de preço">
+            <option value="all">Todos os preços</option>
+            <option value="public">Preço publicado</option>
+            <option value="quote">Sob consulta</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ferramenta</th>
+              <th>Preço publicado</th>
+              <th>Leitura rápida</th>
+              <th>Fonte</th>
+            </tr>
+          </thead>
+          <tbody id="tools">
+            <tr data-region="int" data-pricing="public" data-search="moego daycare boarding mobile grooming">
+              <td class="tool-name"><a href="https://www.moego.pet/pricing?hsLang=en" target="_blank" rel="noopener">MoeGo</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>US$49/mês</strong><small>Growth: US$99/mês; Ultimate: US$159/mês. Growth e Ultimate são por van.</small></td>
+              <td class="note">A página de preços geral publica os planos; a solução também tem página específica para daycare.</td>
+              <td><a class="source" href="https://www.moego.pet/pet-daycare-software" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="public" data-search="gingr daycare boarding grooming">
+              <td class="tool-name"><a href="https://www.gingrapp.com/pricing" target="_blank" rel="noopener">Gingr</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>US$169/mês</strong><small>Plano Play: US$142/mês no pagamento anual.</small></td>
+              <td class="note">Plano Play é direcionado a dog daycares e day training.</td>
+              <td><a class="source" href="https://www.gingrapp.com/pricing" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="br" data-pricing="public" data-search="sispet brasil creche hotel daycare pet shop">
+              <td class="tool-name"><a href="https://sispet.com.br/plano-mensal/" target="_blank" rel="noopener">Sispet</a><span class="subline"><span class="tag br">Brasil</span></span></td>
+              <td class="price"><strong>R$159/mês</strong><small>Médio: R$259/mês; Amplo: R$459/mês. Plano anual tem desconto.</small></td>
+              <td class="note">Sistema amplo para pet shop, clínica, hotel e creche.</td>
+              <td><a class="source" href="https://sispet.com.br/plano-mensal/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="public" data-search="datcog kennel daycare boarding groomer nova zelandia">
+              <td class="tool-name"><a href="https://www.datcog.app/" target="_blank" rel="noopener">DatCog</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>NZD90/mês</strong><small>Até 100 vagas. Acima de 100: NZD150/mês. Anual: NZD972 e NZD1.620.</small></td>
+              <td class="note">A página permite alternar a moeda. Valores acima refletem a visualização em NZD.</td>
+              <td><a class="source" href="https://www.datcog.app/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="public" data-search="paw partner boarding daycare grooming training">
+              <td class="tool-name"><a href="https://pawpartner.com/" target="_blank" rel="noopener">Paw Partner</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>US$99,99/mês</strong><small>US$1.079,88/ano no plano de boarding, daycare e múltiplos serviços.</small></td>
+              <td class="note">Mensageria SMS é um adicional de US$10,99/mês.</td>
+              <td><a class="source" href="https://pawpartner.com/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="public" data-search="revelation pets daycare boarding cattery grooming">
+              <td class="tool-name"><a href="https://www.revelationpets.com/pricing" target="_blank" rel="noopener">Revelation Pets</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>US$60/mês</strong><small>Silver: US$605/ano. Gold: US$77/mês ou US$770/ano.</small></td>
+              <td class="note">Atende daycare, boarding, cattery, grooming e treinamento.</td>
+              <td><a class="source" href="https://www.revelationpets.com/pricing" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="br" data-pricing="quote" data-search="milisa brasil creche hotel daycare">
+              <td class="tool-name"><a href="https://milisa.net/valores/" target="_blank" rel="noopener">Milisa</a><span class="subline"><span class="tag br">Brasil</span> <span class="tag quote">Sob consulta</span></span></td>
+              <td class="price"><strong>Preço sob consulta</strong><small>Pagamento mensal; implantação e suporte incluídos.</small></td>
+              <td class="note">Sistema brasileiro focado em creches e hotéis de cachorros.</td>
+              <td><a class="source" href="https://milisa.net/valores/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="public" data-search="doggie dashboard daycare kennel boarding free">
+              <td class="tool-name"><a href="https://www.doggiedashboard.com/" target="_blank" rel="noopener">DoggieDashboard</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>US$0</strong><small>Gratuito até 10 pets. Premium: US$40/mês ou US$400/ano.</small></td>
+              <td class="note">O Premium libera perfis ilimitados e é mensal, sem contrato.</td>
+              <td><a class="source" href="https://www.doggiedashboard.com/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="quote" data-search="petexec daycare boarding grooming training">
+              <td class="tool-name"><a href="https://www.petexec.net/" target="_blank" rel="noopener">PetExec</a><span class="subline"><span class="tag int">Exterior</span> <span class="tag quote">Sob consulta</span></span></td>
+              <td class="price"><strong>Preço oficial não publicado</strong><small>Diretórios especializados indicam a partir de US$105/mês.</small></td>
+              <td class="note">Foi adquirido pela Togetherwork; confirme a cotação diretamente com o fornecedor.</td>
+              <td><a class="source" href="https://www.capterra.com/p/92864/PetExec/" target="_blank" rel="noopener">Capterra ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="public" data-search="time to pet daycare boarding pet sitting facility">
+              <td class="tool-name"><a href="https://www.timetopet.com/pricing" target="_blank" rel="noopener">Time To Pet</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>US$79/mês</strong><small>Plano Facility, voltado a operações com daycare e boarding.</small></td>
+              <td class="note">Os planos Lite e Solo começam em US$25 e US$50, mas são voltados a operações individuais.</td>
+              <td><a class="source" href="https://www.timetopet.com/pricing" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="public" data-search="propet boarding daycare grooming training kennel">
+              <td class="tool-name"><a href="https://www.propetware.com/pricing-subscriptions/" target="_blank" rel="noopener">ProPet</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>US$64,99/mês</strong><small>Base US$49,99 + módulo Daycare US$15. Setup mensal: US$75 por módulo.</small></td>
+              <td class="note">O primeiro mês é gratuito; planos anual e de dois anos têm desconto.</td>
+              <td><a class="source" href="https://www.propetware.com/pricing-subscriptions/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="int" data-pricing="public" data-search="daysmart pet daycare boarding grooming">
+              <td class="tool-name"><a href="https://www.daysmart.com/pet/pricing/" target="_blank" rel="noopener">DaySmart Pet</a><span class="subline"><span class="tag int">Exterior</span></span></td>
+              <td class="price"><strong>US$54/mês</strong><small>Basic US$29 com pagamentos + calendário daycare US$25. Sem pagamentos: US$64.</small></td>
+              <td class="note">Também oferece planos Deluxe, Growth e Premium.</td>
+              <td><a class="source" href="https://www.daysmart.com/pet/pricing/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="br" data-pricing="quote" data-search="ledog pro brasil creche hotel daycare pet">
+              <td class="tool-name"><a href="https://ledog.pro.br/planos-e-precos" target="_blank" rel="noopener">Ledog PRO</a><span class="subline"><span class="tag br">Brasil</span> <span class="tag quote">Sob consulta</span></span></td>
+              <td class="price"><strong>Preço sob consulta</strong><small>Treinamento: R$250, gratuito no plano anual.</small></td>
+              <td class="note">Planos PRO e Premium com teste gratuito de 7 dias.</td>
+              <td><a class="source" href="https://ledog.pro.br/planos-e-precos" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="br" data-pricing="public" data-search="sistema pet brasil hotel creche daycare">
+              <td class="tool-name"><a href="https://sistemapet.com/hotel.html" target="_blank" rel="noopener">SistemaPET</a><span class="subline"><span class="tag br">Brasil</span></span></td>
+              <td class="price"><strong>A partir de R$84,90/mês</strong><small>Valor informado para o plano anual.</small></td>
+              <td class="note">Inclui controle de reservas, daycare, financeiro e múltiplos usuários.</td>
+              <td><a class="source" href="https://sistemapet.com/hotel.html" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="br" data-pricing="public" data-search="hostmypet brasil hotel creche daycare">
+              <td class="tool-name"><a href="https://hostmypet.com.br/" target="_blank" rel="noopener">HostMyPet</a><span class="subline"><span class="tag br">Brasil</span></span></td>
+              <td class="price"><strong>R$0</strong><small>Gratuito com limites. Starter: R$99/mês; Pro: R$199/mês.</small></td>
+              <td class="note">Plataforma nacional para hotéis e creches pet.</td>
+              <td><a class="source" href="https://hostmypet.com.br/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="br" data-pricing="public" data-search="pet attend brasil daycare hotel banho tosa creche">
+              <td class="tool-name"><a href="https://www.petattend.com.br/" target="_blank" rel="noopener">Pet Attend</a><span class="subline"><span class="tag br">Brasil</span></span></td>
+              <td class="price"><strong>R$129/mês</strong><small>Essencial anual: 12× R$99. Completo: R$189,90/mês; Avançado: R$319,90/mês.</small></td>
+              <td class="note">Teste de 7 dias; planos incluem gestão de daycare, hotel e banho e tosa.</td>
+              <td><a class="source" href="https://www.petattend.com.br/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="ref" data-pricing="quote" data-search="brightwheel childcare creche referencia escola infantil">
+              <td class="tool-name"><a href="https://mybrightwheel.com/pricing/" target="_blank" rel="noopener">brightwheel</a><span class="subline"><span class="tag ref">Referência</span> <span class="tag quote">Sob consulta</span></span></td>
+              <td class="price"><strong>Preço personalizado</strong><small>A plataforma solicita dados da operação para montar a cotação.</small></td>
+              <td class="note">É voltada a creches infantis, não a creches pet; foi mantida como referência.</td>
+              <td><a class="source" href="https://mybrightwheel.com/pricing/" target="_blank" rel="noopener">Ver fonte ↗</a></td>
+            </tr>
+            <tr data-region="ref" data-pricing="quote" data-search="contorno manual referencia processo manual">
+              <td class="tool-name">Contorno manual<span class="subline"><span class="tag ref">Referência</span></span></td>
+              <td class="price"><strong>Não se aplica</strong><small>Não é uma ferramenta SaaS com mensalidade.</small></td>
+              <td class="note">Representa um processo manual de gestão, conforme a referência da análise.</td>
+              <td><span class="source">Referência visual</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="empty" class="empty">Nenhuma ferramenta corresponde aos filtros escolhidos.</div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Valores consultados nas páginas dos fornecedores e, no caso do PetExec, em diretório especializado. Podem mudar sem aviso e não incluem necessariamente impostos, câmbio, processamento de pagamentos ou implantação.</p>
+      <span class="footer-mark">CãoMetria · benchmark</span>
+    </footer>
+  </main>
+
+  <script>
+    const search = document.querySelector('#search');
+    const region = document.querySelector('#region');
+    const pricing = document.querySelector('#pricing');
+    const rows = [...document.querySelectorAll('#tools tr')];
+    const count = document.querySelector('#result-count');
+    const empty = document.querySelector('#empty');
+
+    function applyFilters() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+
+      rows.forEach((row) => {
+        const matchesQuery = !query || row.dataset.search.includes(query);
+        const matchesRegion = region.value === 'all' || row.dataset.region === region.value;
+        const matchesPricing = pricing.value === 'all' || row.dataset.pricing === pricing.value;
+        const show = matchesQuery && matchesRegion && matchesPricing;
+        row.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      count.textContent = `${visible} ${visible === 1 ? 'item' : 'itens'}`;
+      empty.classList.toggle('show', visible === 0);
+    }
+
+    search.addEventListener('input', applyFilters);
+    region.addEventListener('change', applyFilters);
+    pricing.addEventListener('change', applyFilters);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CãoMetria — Protótipo</title>
+<style>
+  :root{
+    --paper:#F4F4F0; --surface:#FFFFFF; --surface-2:#FAFAF7;
+    --ink:#191B1F; --ink-soft:#565A61; --ink-faint:#9A9EA4;
+    --line:#E4E4DE; --line-strong:#D2D2CB;
+    --brand:#0B5D5D; --brand-ink:#083F3F; --brand-tint:#E7F0F0;
+    --green:#2E9E5B; --green-tint:#E6F4EC;
+    --amber:#C98A0E; --amber-tint:#FBF1DD;
+    --red:#CE4141; --red-tint:#FBE9E9;
+    --shadow:0 1px 2px rgba(20,22,26,.05), 0 8px 24px rgba(20,22,26,.08);
+    --shadow-lg:0 12px 40px rgba(20,22,26,.16);
+    --font:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    --mono:"Consolas","SF Mono",ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0F1113; --surface:#17191C; --surface-2:#1C1F22;
+      --ink:#ECEDEA; --ink-soft:#A4A9AE; --ink-faint:#656A6F;
+      --line:#2A2D31; --line-strong:#3A3E43;
+      --brand:#34AFAF; --brand-ink:#8FD9D9; --brand-tint:#123536;
+      --green:#46C07A; --green-tint:#12331F;
+      --amber:#E4AE4A; --amber-tint:#33280F;
+      --red:#E56A6A; --red-tint:#331616;
+    }
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#22242A;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;
+    display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  @media (max-width:520px){body{padding:0;background:var(--paper)}}
+
+  /* Phone frame */
+  .phone{
+    width:400px;height:840px;max-height:100vh;background:var(--paper);position:relative;overflow:hidden;
+    border-radius:38px;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;
+    border:1px solid var(--line);
+  }
+  @media (max-width:520px){.phone{width:100vw;height:100vh;border-radius:0;border:none}}
+
+  .app-header{
+    padding:22px 20px 14px;display:flex;align-items:center;justify-content:space-between;
+    background:var(--surface);border-bottom:1px solid var(--line);flex:none;z-index:5;
+  }
+  .app-header .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:32px;height:32px;border-radius:9px;background:var(--brand);display:grid;place-items:center;flex:none}
+  .logo svg{width:19px;height:19px}
+  .app-header .nm{font-weight:800;font-size:16px;letter-spacing:-.01em}
+  .app-header .clock{font-family:var(--mono);font-size:12px;color:var(--ink-faint);display:flex;align-items:center;gap:6px}
+  .bell{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);
+    display:grid;place-items:center;cursor:pointer;color:var(--ink-soft);position:relative}
+  .bell:hover{color:var(--brand);border-color:var(--brand)}
+  .bell .dot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--surface)}
+
+  /* Screen area */
+  .screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:20px 18px 110px;-webkit-overflow-scrolling:touch}
+  .screen::-webkit-scrollbar{width:0}
+
+  h1{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .sub{color:var(--ink-soft);font-size:14px}
+  .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-faint);font-weight:600}
+
+  /* Filter chips */
+  .filters{display:flex;gap:8px;margin:18px 0 6px;overflow-x:auto;padding-bottom:4px}
+  .filters::-webkit-scrollbar{height:0}
+  .chip{font-size:13px;font-weight:600;padding:8px 14px;border-radius:99px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-soft);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:7px}
+  .chip.active{background:var(--brand);border-color:var(--brand);color:#fff}
+  .chip .cnt{font-family:var(--mono);font-size:11px;opacity:.8}
+  .dotmark{width:9px;height:9px;border-radius:50%;flex:none}
+  .dotmark.g{background:var(--green)}.dotmark.a{background:var(--amber)}.dotmark.r{background:var(--red)}
+
+  /* Attention banner */
+  .attn{display:flex;align-items:center;gap:12px;background:var(--amber-tint);border:1px solid var(--amber);
+    border-radius:13px;padding:13px 15px;margin:14px 0 4px;cursor:pointer}
+  .attn .ai{width:32px;height:32px;border-radius:9px;background:var(--amber);color:#fff;display:grid;place-items:center;flex:none}
+  .attn .ai svg{width:17px;height:17px}
+  .attn .at{font-weight:700;font-size:13.5px;color:var(--ink)}
+  .attn .ad{font-size:12px;color:var(--ink-soft)}
+
+  /* Pet card */
+  .pet-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  .pet-card{display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 15px;
+    border-left-width:4px;cursor:pointer;box-shadow:var(--shadow);transition:transform .1s}
+  .pet-card:active{transform:scale(.985)}
+  .pet-card.g{border-left-color:var(--green)}.pet-card.a{border-left-color:var(--amber)}.pet-card.r{border-left-color:var(--red)}
+  .pet-card .av{width:42px;height:42px;border-radius:50%;background:var(--brand-tint);display:grid;place-items:center;font-size:22px;flex:none}
+  .pet-card .pn{font-weight:700;font-size:16px}
+  .pet-card .pi{font-size:12.5px;color:var(--ink-soft);margin-top:2px;line-height:1.35}
+  .pet-card .right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .badge{font-family:var(--mono);font-size:10px;padding:4px 9px;border-radius:99px;white-space:nowrap;text-transform:lowercase;letter-spacing:.03em}
+  .badge.g{background:var(--green-tint);color:var(--green)}.badge.a{background:var(--amber-tint);color:var(--amber)}.badge.r{background:var(--red-tint);color:var(--red)}
+  .next-task{font-family:var(--mono);font-size:11px;color:var(--ink-faint);display:flex;align-items:center;gap:4px}
+  .next-task.late{color:var(--red);font-weight:700}
+
+  .empty{text-align:center;color:var(--ink-faint);padding:60px 20px;font-size:14px}
+
+  /* Detail */
+  .back{display:inline-flex;align-items:center;gap:7px;color:var(--ink-soft);font-size:13.5px;font-weight:600;
+    cursor:pointer;margin-bottom:16px;background:none;border:none;font-family:inherit}
+  .back:hover{color:var(--brand)}
+  .pet-head{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+  .pet-head .av{width:64px;height:64px;border-radius:50%;background:var(--brand-tint);display:grid;place-items:center;font-size:34px;flex:none}
+  .pet-head .pn{font-size:24px;font-weight:800;letter-spacing:-.01em}
+  .pet-head .pr{font-size:13px;color:var(--ink-soft);margin-top:2px}
+  .collar-line{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:12.5px;font-weight:600}
+  .puck{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 3px rgba(255,255,255,.3)}
+  .puck.g{background:var(--green)}.puck.a{background:var(--amber)}.puck.r{background:var(--red)}
+
+  .react-banner{display:flex;gap:12px;align-items:flex-start;background:var(--red-tint);border:1px solid var(--red);
+    border-radius:13px;padding:14px 16px;margin:18px 0}
+  .react-banner svg{flex:none;color:var(--red);margin-top:1px}
+  .react-banner .rt{font-weight:700;font-size:13.5px;color:var(--ink)}
+  .react-banner .rd{font-size:12.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
+
+  .section-t{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-faint);
+    font-weight:600;margin:24px 0 12px}
+  .tasks{display:flex;flex-direction:column;gap:9px}
+  .task{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);
+    border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+  .task .ti{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;background:var(--surface-2)}
+  .task .tl{font-weight:600;font-size:14px}
+  .task .th{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:1px}
+  .task.done .tl{color:var(--ink-faint)}
+  .task.done .th{color:var(--green)}
+  .check-btn{width:30px;height:30px;border-radius:50%;border:2px solid var(--line-strong);background:transparent;cursor:pointer;
+    display:grid;place-items:center;flex:none;color:transparent;transition:all .15s}
+  .check-btn:hover{border-color:var(--brand)}
+  .check-btn.done{background:var(--green);border-color:var(--green);color:#fff}
+
+  .info-block{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+  .info-block .il{font-size:12px;color:var(--ink-faint);font-weight:600;margin-bottom:4px}
+  .info-block .iv{font-size:14px;color:var(--ink);line-height:1.5}
+  .tutor{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+  .tutor:last-child{border-bottom:none}
+  .tutor .tn{font-weight:600;font-size:14px}
+  .tutor .tr{font-size:12px;color:var(--ink-soft)}
+  .tutor .call{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);
+    display:grid;place-items:center;color:var(--brand);cursor:pointer;text-decoration:none}
+  .em-tag{font-family:var(--mono);font-size:9px;background:var(--red-tint);color:var(--red);padding:2px 6px;border-radius:5px;margin-left:6px;letter-spacing:.03em}
+
+  /* Forms */
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-bottom:6px}
+  .field input,.field select{width:100%;padding:12px 14px;border-radius:11px;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:inherit;font-size:15px}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint)}
+  .field{margin-bottom:16px}
+  .row2{display:flex;gap:12px}
+  .row2 .field{flex:1;min-width:0}
+  .nested{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:15px 16px 4px;margin:-4px 0 14px}
+  .nested .field label{font-size:12px}
+  .tutor-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .tutor-idx{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);font-weight:700}
+  .tutor-remove{background:none;border:none;color:var(--red);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:2px 4px}
+  .tutor-remove:hover{text-decoration:underline}
+  .hora-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+  .hora-row input{flex:1}
+  .hora-remove{width:44px;height:44px;border:1px solid var(--line);background:var(--surface);border-radius:11px;
+    color:var(--red);cursor:pointer;font-size:20px;line-height:1;flex:none;display:grid;place-items:center}
+  .hora-remove:hover{border-color:var(--red)}
+  .add-hora{background:none;border:none;color:var(--brand);font-weight:600;font-size:13px;cursor:pointer;
+    font-family:inherit;padding:4px 0 2px;display:inline-flex;align-items:center;gap:6px}
+  .add-hora svg{width:14px;height:14px}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface);
+    border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
+  .toggle-row .tt{font-weight:600;font-size:14px}
+  .toggle-row .td{font-size:12px;color:var(--ink-faint);margin-top:2px}
+  .switch{width:46px;height:27px;border-radius:99px;background:var(--line-strong);position:relative;cursor:pointer;flex:none;transition:background .2s}
+  .switch.on{background:var(--brand)}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:left .2s}
+  .switch.on::after{left:22px}
+  .sub-fields{padding:2px 2px 6px;margin-bottom:8px}
+  .add-btn{width:100%;padding:12px;border-radius:11px;border:1.5px dashed var(--line-strong);background:transparent;
+    color:var(--brand);font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}
+  .add-btn svg{width:16px;height:16px}
+  .collar-preview{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;margin:18px 0;
+    background:var(--surface-2);border:1px solid var(--line)}
+  .collar-preview .big-puck{width:44px;height:44px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 6px rgba(255,255,255,.25);transition:background .3s}
+  .collar-preview .cpt{font-size:12px;color:var(--ink-faint);font-weight:600}
+  .collar-preview .cpv{font-weight:800;font-size:17px;margin-top:1px}
+
+  .btn-primary{width:100%;padding:15px;border-radius:12px;border:none;background:var(--brand);color:#fff;
+    font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;margin-top:8px}
+  .btn-primary:active{opacity:.9}
+  .btn-secondary{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);
+    color:var(--ink);font-weight:600;font-size:15px;cursor:pointer;font-family:inherit;margin-top:10px}
+
+  /* Check-in */
+  .checkin-pick{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .instruct{text-align:center;padding:20px 10px}
+  .instruct .big-collar{width:120px;height:120px;border-radius:50%;margin:10px auto 22px;
+    box-shadow:inset 0 0 0 16px rgba(255,255,255,.22),var(--shadow);display:grid;place-items:center}
+  .instruct .big-collar svg{width:52px;height:52px;color:rgba(255,255,255,.92)}
+  .instruct .il1{font-size:14px;color:var(--ink-soft)}
+  .instruct .il2{font-size:24px;font-weight:800;letter-spacing:-.01em;margin:6px 0 4px;line-height:1.2}
+  .instruct .il2 .cc{padding:0 4px}
+  .instruct .appt{font-size:13.5px;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;padding:14px;margin:18px 0 6px;line-height:1.5}
+
+  /* Bottom nav */
+  .navbar{position:absolute;bottom:16px;left:16px;right:16px;height:66px;background:var(--surface);
+    border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);display:flex;align-items:center;
+    justify-content:space-around;padding:0 10px;z-index:10}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;
+    color:var(--ink-faint);font-family:inherit;font-size:10px;font-weight:600;padding:8px 14px;flex:1}
+  .nav-item svg{width:23px;height:23px}
+  .nav-item.active{color:var(--brand)}
+  .nav-center{margin-top:-36px}
+  .nav-center .circle{width:58px;height:58px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;
+    box-shadow:0 6px 18px rgba(11,93,93,.4);border:4px solid var(--paper)}
+  .nav-center .circle svg{width:26px;height:26px}
+  .nav-center .lbl{margin-top:5px;color:var(--brand)}
+
+  /* Modal / alert */
+  .overlay{position:absolute;inset:0;background:rgba(10,12,14,.5);z-index:50;display:none;align-items:flex-end;justify-content:center;
+    animation:fade .2s ease}
+  .overlay.show{display:flex}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @keyframes slideup{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+  .alert-sheet{width:100%;background:var(--surface);border-radius:24px 24px 0 0;padding:26px 22px 24px;animation:slideup .28s cubic-bezier(.2,.8,.2,1)}
+  .alert-sheet .grip{width:38px;height:4px;border-radius:99px;background:var(--line-strong);margin:0 auto 20px}
+  .alert-icon{width:60px;height:60px;border-radius:16px;background:var(--red);color:#fff;display:grid;place-items:center;margin:0 auto 16px}
+  .alert-icon svg{width:32px;height:32px}
+  .alert-sheet h2{text-align:center;font-size:21px;font-weight:800;letter-spacing:-.01em}
+  .alert-sheet .asub{text-align:center;color:var(--ink-soft);font-size:14px;margin-top:6px}
+  .alert-detail{background:var(--red-tint);border-radius:14px;padding:16px;margin:20px 0;text-align:center}
+  .alert-detail .amed{font-weight:800;font-size:17px}
+  .alert-detail .adose{font-size:13.5px;color:var(--ink-soft);margin-top:3px}
+  .alert-detail .atime{font-family:var(--mono);font-size:12px;color:var(--red);font-weight:700;margin-top:8px}
+
+  /* Toast */
+  .toast{position:absolute;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);z-index:60;
+    background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:12px;font-size:13.5px;font-weight:600;
+    box-shadow:var(--shadow-lg);opacity:0;transition:all .3s;pointer-events:none;display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast svg{color:var(--green)}
+
+  .fade-in{animation:fadein .3s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ===== Regras das histórias — só composição dos tokens já existentes ===== */
+  .login{padding:22px 4px 0;text-align:center}
+  .login .login-logo{width:64px;height:64px;border-radius:20px;background:var(--brand);color:#fff;display:grid;place-items:center;margin:0 auto 18px}
+  .login .login-logo svg{width:32px;height:32px}
+  .login .field{text-align:left}
+  .login-note{font-size:12px;color:var(--ink-faint);margin-top:18px;line-height:1.5}
+  .form-error{background:var(--red-tint);border:1px solid var(--red);color:var(--ink);border-radius:11px;
+    padding:11px 13px;font-size:13px;font-weight:600;margin-bottom:14px;text-align:left}
+  .field.err input{border-color:var(--red)}
+  .field .err-msg{font-size:11.5px;color:var(--red);font-weight:600;margin-top:5px}
+  .badge.gray{background:var(--surface-2);color:var(--ink-faint)}
+  .pet-card.off{opacity:.5}
+  .next-task.warn{color:var(--amber);font-weight:700}
+  .task.na .tl{color:var(--ink-faint)}
+  .task.na .th{color:var(--red)}
+  .task .tcount{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:3px}
+  .check-btn.na{background:var(--red-tint);border-color:var(--red);color:var(--red)}
+  .check-btn[disabled]{opacity:.35;cursor:default}
+  .hist{font-size:12.5px;color:var(--ink-soft);line-height:1.45;padding:9px 0;border-bottom:1px solid var(--line)}
+  .hist:last-child{border-bottom:none}
+  .hist .hd{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);display:block;margin-bottom:2px}
+
+  /* Ocorrências */
+  .occ{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+  .occ:last-child{border-bottom:none}
+  .occ .obar{width:3px;align-self:stretch;border-radius:99px;flex:none;background:var(--ink-faint)}
+  .occ.sev-a .obar{background:var(--amber)}
+  .occ.sev-r .obar{background:var(--red)}
+  .occ .ot{font-weight:700;font-size:13.5px}
+  .occ .om{font-size:12.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px}
+  .occ .od{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:4px}
+  .occ-empty{font-size:12.5px;color:var(--ink-faint);line-height:1.45}
+  .occ-add{margin-top:12px}
+  .btn-primary[disabled]{opacity:.4;cursor:default}
+  .type-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+  .type-chip{font-size:12.5px;font-weight:600;padding:9px 13px;border-radius:11px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;gap:7px}
+  .type-chip.on{border-color:var(--brand);background:var(--brand-tint);color:var(--brand)}
+  .type-chip .sv{width:8px;height:8px;border-radius:50%;flex:none;background:var(--ink-faint)}
+  .type-chip .sv.a{background:var(--amber)} .type-chip .sv.r{background:var(--red)}
+  .field textarea{width:100%;padding:12px 14px;border-radius:11px;min-height:78px;resize:vertical;
+    border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);
+    font-family:inherit;font-size:14.5px;line-height:1.45}
+  .field textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint)}
+  .occ-sheet{max-height:88vh;overflow-y:auto}
+  .occ-sheet h2{text-align:left;font-size:19px;font-weight:800;margin-bottom:4px}
+  .no-collar{display:flex;gap:9px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;
+    padding:11px 13px;font-size:12px;color:var(--ink-soft);line-height:1.45;margin:14px 0 4px}
+  .no-collar b{color:var(--ink)}
+  .pick{display:flex;flex-direction:column;gap:9px;margin-bottom:4px}
+  .pick-item{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);
+    border:1px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer}
+  .pick-item.on{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint)}
+  .pick-item .pkn{font-weight:600;font-size:14px}
+  .pick-item .pkr{font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .pick-item .pkright{display:flex;align-items:center;gap:10px;flex:none}
+  .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--line-strong);flex:none;display:grid;place-items:center}
+  .pick-item.on .radio{border-color:var(--brand)}
+  .pick-item.on .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--brand)}
+  .block-warn{background:var(--red-tint);border:1px solid var(--red);border-radius:13px;padding:14px 16px;margin:16px 0}
+  .block-warn .bt{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:9px}
+  .block-warn .bt svg{color:var(--red);flex:none}
+  .block-warn .bd{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
+  .block-warn .bitem{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-top:11px}
+  .block-warn .bl{font-weight:600;font-size:13.5px}
+  .block-warn .bh{font-family:var(--mono);font-size:11.5px;color:var(--red);font-weight:700;margin-top:2px}
+  .mini-btn{background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:8px 12px;
+    font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;margin:9px 8px 0 0}
+  .mini-btn:hover{border-color:var(--brand);color:var(--brand)}
+  .btn-primary[disabled]{opacity:.45;cursor:default}
+  .clock{cursor:pointer}
+  .alert-sheet .adiado{font-family:var(--mono);font-size:11.5px;color:var(--amber);font-weight:700;text-align:center;margin-top:14px}
+  .alert-sheet .nosnooze{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:14px;line-height:1.45}
+  .sheet-note{font-size:12.5px;color:var(--ink-soft);line-height:1.45;margin-bottom:14px}
+  .footer-actions{display:flex;gap:10px;margin-top:26px}
+  .footer-actions button{margin-top:0}
+  .sheet-collar{width:96px;height:96px;border-radius:50%;margin:4px auto 18px;display:grid;place-items:center;
+    box-shadow:inset 0 0 0 13px rgba(255,255,255,.22)}
+  .sheet-collar svg{width:44px;height:44px;color:rgba(255,255,255,.92)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="app-header">
+    <div class="brand">
+      <div class="logo"><svg viewBox="0 0 24 24" fill="none"><circle cx="5.6" cy="9.4" r="2.6" fill="#fff"/><circle cx="12" cy="6" r="2.9" fill="#fff"/><circle cx="18.4" cy="9.4" r="2.6" fill="#fff"/><path d="M12 10.6c-3.7 0-6.4 2.7-6.4 5.5 0 2.4 2.9 3.5 6.4 3.5s6.4-1.1 6.4-3.5c0-2.8-2.7-5.5-6.4-5.5z" fill="#fff"/></svg></div>
+      <span class="nm">CãoMetria</span>
+    </div>
+    <div class="hdr-tools" style="display:flex;align-items:center;gap:10px">
+      <span class="clock" id="clock">14:00</span>
+      <button class="bell" id="bell" title="Simular alarme de medicação" onclick="fireAlert()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="dot" id="bellDot"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen"></div>
+
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ============ CONFIG DA DEMO ============
+   As histórias em ../historias/ definem as regras; aqui ficam só os números que a
+   demo comprime para caber numa apresentação.                                     */
+var CRECHE = "Creche Patas Felizes";  // conta única da creche — assina as comprovações (premissa P1)
+var SENHA  = "patas";                 // acesso da demo
+var RE_ALERTA_MS = 8000;              // no app real são 5 minutos (H7 · CA3)
+var PASSO_MIN = 5;                    // cada insistência avança 5 min no relógio simulado
+var MAX_ADIAMENTOS = 2;               // H7 · CA6 — o segundo adiamento é o último
+
+var relogio = "14:00";
+var dia = 1;
+var alertaTimer = null;
+var SEQ = 1;
+
+/* ============ DADOS ============ */
+function C(hora){ return {id:"t"+(SEQ++), tipo:"comida", hora:hora, done:false, at:null, by:null,
+  na:null, disparos:0, adiamentos:0}; }
+function M(nome,dose,hora){ return {id:"t"+(SEQ++), tipo:"med", nome:nome, dose:dose, hora:hora,
+  done:false, at:null, by:null, na:null, disparos:0, adiamentos:0}; }
+
+var pets = [
+  { id:"bila", nome:"Bila", emoji:"🐶", raca:"SRD · 3 anos", present:true, ativo:true,
+    reativo:false, dietaRacao:null, comidas:[], alergia:null, meds:[], historico:[],
+    ocorrencias:[{dia:1, hora:"09:40", tipo:"separacao", com:"thor", comNome:"Thor",
+      obs:"Ficou tenso na chegada da Bila. Separado antes de escalar.", por:"Creche Patas Felizes"}],
+    tutores:[{nome:"Marina Alves", rel:"Tutora", emerg:true, tel:"11 99999-0001"}] },
+
+  { id:"nina", nome:"Nina", emoji:"🐩", raca:"Poodle · 5 anos", present:true, ativo:true,
+    reativo:false, dietaRacao:"Ração sem grãos", dietaPorcao:"200g", comidas:[C("12:00")], alergia:"Frango",
+    meds:[M("Apoquel 5mg","1 comprimido","14:00")], historico:[], ocorrencias:[],
+    tutores:[{nome:"Carlos Dias", rel:"Tutor", emerg:true, tel:"11 99999-0002"},
+             {nome:"Beatriz Dias", rel:"Tutora · guarda compartilhada", emerg:false, tel:"11 99999-0003"}] },
+
+  { id:"thor", nome:"Thor", emoji:"🐕‍🦺", raca:"Pastor Alemão · 4 anos", present:true, ativo:true,
+    reativo:true, obs:"Reativo a outros machos. Isolar do grupo. Manejo com guia curta e aproximação calma.",
+    dietaRacao:null, comidas:[], alergia:null, meds:[], historico:[],
+    ocorrencias:[{dia:1, hora:"09:40", tipo:"separacao", com:"bila", comNome:"Bila",
+      obs:"Ficou tenso na chegada da Bila. Separado antes de escalar.", por:"Creche Patas Felizes"}],
+    tutores:[{nome:"Rafael Souza", rel:"Tutor", emerg:true, tel:"11 99999-0004"}] },
+
+  { id:"mel", nome:"Mel", emoji:"🦮", raca:"Golden · 2 anos", present:false, ativo:true,
+    reativo:false, dietaRacao:"Ração", dietaPorcao:"250g", comidas:[C("08:00"),C("16:00")], alergia:null,
+    meds:[M("Vermífugo","1 comprimido","09:00"),M("Vermífugo","1 comprimido","21:00")], historico:[], ocorrencias:[],
+    tutores:[{nome:"Júlia Reis", rel:"Tutora", emerg:true, tel:"11 99999-0005"}] },
+
+  { id:"zeca", nome:"Zeca", emoji:"🐕", raca:"Beagle · 6 anos", present:false, ativo:true,
+    reativo:false, dietaRacao:null, comidas:[], alergia:null, meds:[], historico:[], ocorrencias:[],
+    tutores:[{nome:"Pedro Lima", rel:"Tutor", emerg:true, tel:"11 99999-0006"}] }
+];
+
+/* ============ RELÓGIO SIMULADO ============ */
+function minutos(h){ var p=(h||"00:00").split(":"); return (+p[0])*60 + (+p[1]); }
+function hhmm(m){ m=((m%1440)+1440)%1440; var h=Math.floor(m/60), i=m%60;
+  return (h<10?"0":"")+h+":"+(i<10?"0":"")+i; }
+function avancar(min){ relogio=hhmm(minutos(relogio)+min); pintarRelogio(); }
+function pintarRelogio(){ document.getElementById("clock").textContent=relogio; }
+
+/* ============ LÓGICA ============ */
+function corDoPet(p){
+  if(p.reativo) return "r";
+  if((p.meds && p.meds.length) || (p.comidas && p.comidas.length) || p.alergia) return "a";
+  return "g";
+}
+function nomeCor(c){ return c==="r"?"vermelha":c==="a"?"amarela":"verde"; }
+function corVar(c){ return c==="r"?"var(--red)":c==="a"?"var(--amber)":"var(--green)"; }
+
+function tarefasDoPet(p){
+  var ts=(p.comidas||[]).concat(p.meds||[]);
+  ts.sort(function(a,b){ return a.hora<b.hora?-1:1; });
+  return ts;
+}
+function labelTarefa(p,t){
+  if(t.tipo==="med") return t.nome+" · "+t.dose;
+  var d=[p.dietaRacao,p.dietaPorcao].filter(Boolean).join(" · ");
+  return "Alimentação"+(d?" — "+d:"");
+}
+function pendente(t){ return !t.done && !t.na; }
+function atrasada(t){ return pendente(t) && minutos(t.hora) < minutos(relogio); }
+function tarefasPendentes(p){ return tarefasDoPet(p).filter(pendente); }
+function proximaTarefa(p){ var ts=tarefasPendentes(p); return ts.length?ts[0]:null; }
+function tarefaPorId(p,id){ return tarefasDoPet(p).filter(function(t){return t.id===id;})[0]; }
+function petById(id){ return pets.filter(function(p){return p.id===id;})[0]; }
+function presentes(){ return pets.filter(function(p){return p.present;}); }
+
+function subtituloPet(p){
+  var parts=[];
+  if(p.reativo) parts.push("reativo · isolar");
+  if(p.meds && p.meds.length) parts.push(p.meds.length>1 ? ("remédio "+p.meds.length+"x") : ("remédio "+p.meds[0].hora));
+  if(p.comidas && p.comidas.length) parts.push(p.comidas.length>1 ? ("comida "+p.comidas.length+"x") : "comida "+p.comidas[0].hora);
+  if(p.alergia) parts.push("alergia: "+p.alergia.toLowerCase());
+  return parts.length?parts.join(" · "):"sem apontamentos";
+}
+function pushHist(p,texto){
+  p.historico.unshift({dia:dia, hora:relogio, texto:texto});
+}
+
+/* ============ OCORRÊNCIAS ============
+   Registro, não recomendação: descreve o que aconteceu e quem estava junto.
+   Deliberadamente NÃO altera a cor da coleira — quem decide o manejo é a creche.
+   É o que alimenta o histórico de convivência do Horizonte 2. */
+var TIPOS_OCORRENCIA = [
+  { id:"separacao",      label:"Separação preventiva", sev:"",  dupla:true,
+    frase:"Separação preventiva" },
+  { id:"desentendimento",label:"Desentendimento",      sev:"a", dupla:true,
+    frase:"Desentendimento entre cães" },
+  { id:"mordida-cao",    label:"Mordida em outro cão", sev:"r", dupla:true,
+    frase:"Mordida em outro cão" },
+  { id:"mordida-pessoa", label:"Mordida em pessoa",    sev:"r", dupla:false,
+    frase:"Mordida em pessoa da equipe" },
+  { id:"outro",          label:"Outro",                sev:"",  dupla:true,
+    frase:"Ocorrência" }
+];
+function tipoOcorrencia(id){
+  return TIPOS_OCORRENCIA.filter(function(t){return t.id===id;})[0] || TIPOS_OCORRENCIA[4];
+}
+function assinatura(){ return CRECHE; }
+
+/* ============ ÍCONES ============ */
+var IC = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  checkin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>',
+  paw:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5.6" cy="9.4" r="2.6"/><circle cx="12" cy="6" r="2.9"/><circle cx="18.4" cy="9.4" r="2.6"/><path d="M12 10.6c-3.7 0-6.4 2.7-6.4 5.5 0 2.4 2.9 3.5 6.4 3.5s6.4-1.1 6.4-3.5c0-2.8-2.7-5.5-6.4-5.5z"/></svg>',
+  food:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7a3 3 0 0 0 3 3v10M6 2v7M4.5 2v7M15 2c-1.5 1.5-2 4-2 6s.5 4 2 5v8"/></svg>',
+  pill:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5a5 5 0 0 1-7-7l6-6a5 5 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5a5 5 0 0 1-7-7l6-6a5 5 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>',
+  check:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  back:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'
+};
+
+/* ============ ESTADO / ROTA ============ */
+var state = { logado:false, loginErro:false, screen:"login", petId:null, filter:"all", checkinPet:null,
+  checkout:{ petId:null, quem:null, terceiro:false, autorizadoPor:null },
+  occ:null,
+  form:novoForm() };
+
+function novoForm(){
+  return { editId:null, dieta:false, med:false, reativo:false, ativo:true,
+    nome:"", raca:"", idade:"", alergia:"",
+    tutores:[{nome:"",rel:"",tel:""}],
+    dietaRacao:"", dietaPorcao:"", dietaHoras:["12:00"],
+    medNome:"", medDose:"", medHoras:["14:00"], reativoObs:"", erros:{} };
+}
+
+function nav(screen, opts){
+  opts=opts||{};
+  state.screen=screen;
+  if(opts.petId!==undefined) state.petId=opts.petId;
+  render();
+  document.getElementById("screen").scrollTop=0;
+}
+
+/* ============ RENDER ============ */
+function render(){
+  var s=document.getElementById("screen");
+  var html="";
+  if(state.screen==="login") html=renderLogin();
+  else if(state.screen==="home") html=renderHome();
+  else if(state.screen==="detail") html=renderDetail();
+  else if(state.screen==="cadastro") html=renderCadastro();
+  else if(state.screen==="checkin") html=renderCheckin();
+  else if(state.screen==="checkin-confirm") html=renderCheckinConfirm();
+  else if(state.screen==="checkout") html=renderCheckout();
+  s.innerHTML='<div class="fade-in">'+html+'</div>';
+  renderNav();
+  renderHeader();
+}
+function renderHeader(){
+  var tools=document.querySelector(".app-header .hdr-tools");
+  if(tools) tools.style.visibility = state.logado ? "visible" : "hidden";
+}
+
+/* ---- Login (H1) ---- */
+function renderLogin(){
+  return '<div class="login">'
+    +'<div class="login-logo">'+IC.paw+'</div>'
+    +'<h1>CãoMetria</h1>'
+    +'<div class="sub" style="margin:6px 0 24px">Acesso da creche</div>'
+    +(state.loginErro?'<div class="form-error">Usuário ou senha inválidos</div>':'')
+    +'<div class="field"><label>Creche</label><input type="text" id="l_user" value="'+esc(CRECHE)+'"></div>'
+    +'<div class="field"><label>Senha</label><input type="password" id="l_pass" value="'+esc(SENHA)+'"></div>'
+    +'<button class="btn-primary" onclick="entrar()">Entrar</button>'
+    +'<div class="login-note">Cada cuidado registrado é assinado por esta conta.<br>'
+    +'Identificação por funcionário fica para o próximo horizonte.</div>'
+    +'</div>';
+}
+function entrar(){
+  var u=document.getElementById("l_user").value;
+  var s=document.getElementById("l_pass").value;
+  if(u!==CRECHE || s!==SENHA){ state.loginErro=true; render(); return; }
+  state.loginErro=false; state.logado=true;
+  nav("home");
+  toast("Conectado como "+CRECHE);
+}
+function sair(){ state.logado=false; cancelarAlerta(); nav("login"); }
+
+/* ---- Painel do dia (H4 + H10 + H12) ---- */
+function renderHome(){
+  var lista=presentes();
+  var counts={all:lista.length,g:0,a:0,r:0};
+  lista.forEach(function(p){counts[corDoPet(p)]++;});
+  var vis=lista.filter(function(p){return state.filter==="all"||corDoPet(p)===state.filter;});
+  var ordem={r:0,a:1,g:2};
+  vis.sort(function(a,b){
+    var d=ordem[corDoPet(a)]-ordem[corDoPet(b)];
+    if(d!==0) return d;
+    var aa=temAtrasada(a)?0:1, ba=temAtrasada(b)?0:1;
+    if(aa!==ba) return aa-ba;
+    var ta=proximaTarefa(a), tb=proximaTarefa(b);
+    if(ta&&tb) return ta.hora<tb.hora?-1:1;
+    return ta?-1:(tb?1:0);
+  });
+
+  var pend=[], atras=[];
+  lista.forEach(function(p){ (p.meds||[]).forEach(function(m){
+    if(pendente(m)){ pend.push({p:p,m:m}); if(atrasada(m)) atras.push({p:p,m:m}); }
+  }); });
+
+  var banner="";
+  if(pend.length){
+    var titulo = atras.length
+      ? (atras.length+(atras.length>1?" doses atrasadas":" dose atrasada")+" · "+pend.length+" pendente"+(pend.length>1?"s":""))
+      : (pend.length+(pend.length>1?" medicações pendentes":" medicação pendente")+" hoje");
+    var alvo = atras.length?atras[0]:pend[0];
+    banner='<div class="attn" onclick="fireAlert()"><div class="ai">'+IC.alert+'</div>'
+      +'<div><div class="at">'+titulo+'</div>'
+      +'<div class="ad">toque para ver o alerta de '+alvo.p.nome+' ('+alvo.m.hora+')</div></div></div>';
+  }
+
+  var chips='<div class="filters">'
+    +chip("all","Todos",counts.all,null)
+    +chip("g","",counts.g,"g")
+    +chip("a","",counts.a,"a")
+    +chip("r","",counts.r,"r")
+    +'</div>';
+
+  var cards="";
+  if(vis.length===0){
+    cards='<div class="empty">'+(counts.all===0
+      ? "Nenhum pet chegou ainda hoje.<br>Use o Check-in para registrar a primeira chegada."
+      : "Nenhum pet nesse filtro.")+'</div>';
+  } else {
+    vis.forEach(function(p){ cards+=cardPet(p); });
+  }
+
+  return '<div class="eyebrow">'+(dia>1?("Dia "+dia):"Hoje")+' · '+relogio+'</div>'
+    +'<h1 style="margin-top:6px">'+counts.all+' pets presentes</h1>'
+    +'<div class="sub" style="margin-top:4px">Segurança primeiro — reativos no topo.</div>'
+    +chips+banner+'<div class="pet-list">'+cards+'</div>';
+}
+function temAtrasada(p){ return tarefasDoPet(p).filter(atrasada).length>0; }
+function cardPet(p){
+  var c=corDoPet(p);
+  var linha="";
+  if(p.checkoutPendente){
+    linha='<div class="next-task warn">'+IC.clock+' check-out não registrado</div>';
+  } else {
+    var at=tarefasDoPet(p).filter(atrasada)[0];
+    if(at){
+      linha='<div class="next-task late">'+IC.clock+' '+(at.tipo==="med"?"dose atrasada":"tarefa atrasada")+' · '+relogio+'</div>';
+    } else {
+      var nt=proximaTarefa(p);
+      if(nt) linha='<div class="next-task">'+IC.clock+' '+nt.hora+'</div>';
+    }
+  }
+  return '<div class="pet-card '+c+'" onclick="nav(\'detail\',{petId:\''+p.id+'\'})">'
+    +'<div class="av">'+p.emoji+'</div>'
+    +'<div><div class="pn">'+p.nome+'</div><div class="pi">'+subtituloPet(p)+'</div></div>'
+    +'<div class="right"><span class="badge '+c+'">'+nomeCor(c)+'</span>'+linha+'</div>'
+    +'</div>';
+}
+function chip(key,label,count,dot){
+  var active=state.filter===key?" active":"";
+  var d=dot?'<span class="dotmark '+dot+'"></span>':'';
+  var l=label||"";
+  return '<button class="chip'+active+'" title="'+(dot?nomeCor(dot):"todos")+'" onclick="setFilter(\''+key+'\')">'+d+(l?'<span>'+l+'</span>':'')+'<span class="cnt">'+count+'</span></button>';
+}
+function setFilter(f){ state.filter=f; render(); }
+
+/* ---- Detalhe do pet (H5 + H6 + H9 + H12) ---- */
+function renderDetail(){
+  var p=petById(state.petId);
+  var c=corDoPet(p);
+  var ts=tarefasDoPet(p);
+
+  var reactBanner = p.reativo
+    ? '<div class="react-banner">'+IC.warn+'<div><div class="rt">Reativo — isolar do grupo</div><div class="rd">'+(p.obs||"")+'</div></div></div>'
+    : '';
+
+  var pendBanner = p.checkoutPendente
+    ? '<div class="block-warn"><div class="bt">'+IC.warn+' Check-out não registrado</div>'
+      +'<div class="bd">Este pet ficou do dia anterior sem registro de saída. Foi retirado sem baixa, ou permaneceu na creche?</div>'
+      +'<button class="mini-btn" onclick="abrirCheckout(\''+p.id+'\')">Registrar a saída</button>'
+      +'<button class="mini-btn" onclick="permaneceu(\''+p.id+'\')">Permaneceu na creche</button></div>'
+    : '';
+
+  var tasksHtml="";
+  if(ts.length===0){
+    tasksHtml='<div class="info-block"><div class="iv" style="color:var(--ink-faint)">Nenhuma tarefa agendada para hoje.</div></div>';
+  } else if(!p.present){
+    tasksHtml='<div class="info-block"><div class="iv" style="color:var(--ink-faint)">'
+      +'Pet sem check-in hoje — as tarefas do dia não se aplicam e não podem ser concluídas.</div></div>';
+    ts.forEach(function(t){ tasksHtml+=linhaTarefa(p,t,true); });
+  } else {
+    ts.forEach(function(t){ tasksHtml+=linhaTarefa(p,t,false); });
+  }
+
+  var temDieta = (p.comidas&&p.comidas.length)||p.alergia;
+  var racaoTxt=[p.dietaRacao,p.dietaPorcao].filter(Boolean).join(" · ")||"—";
+  var dietaTxt = racaoTxt + (p.comidas&&p.comidas.length?" · "+p.comidas.map(function(c){return c.hora;}).join(", "):"")
+    + (p.alergia?'<br><span style="color:var(--red)">Alergia: '+p.alergia+'</span>':"");
+  var dietaBlock = temDieta ? infoBlock("Dieta", dietaTxt) : "";
+  var medBlock = (p.meds&&p.meds.length) ? infoBlock("Medicação", p.meds.map(function(m){return m.nome+" · "+m.dose+" · "+m.hora;}).join("<br>")) : "";
+  var compBlock = p.reativo ? infoBlock("Comportamento", p.obs||"Reativo") : infoBlock("Comportamento","Sem apontamentos");
+  var statusBlock = p.ativo ? "" : infoBlock("Situação","Inativo — não frequenta mais a creche");
+
+  var tutoresHtml=p.tutores.map(function(t){
+    return '<div class="tutor"><div><div class="tn">'+t.nome+(t.emerg?'<span class="em-tag">emergência</span>':"")+'</div>'
+      +'<div class="tr">'+t.rel+'</div></div>'
+      +'<a class="call" href="tel:'+t.tel.replace(/\s/g,"")+'" onclick="toast(\'Ligando para '+t.nome+'\')">'+IC.phone+'</a></div>';
+  }).join("");
+
+  var occs=p.ocorrencias||[];
+  var occHtml = occs.length
+    ? occs.map(function(o){
+        var t=tipoOcorrencia(o.tipo);
+        return '<div class="occ'+(t.sev?" sev-"+t.sev:"")+'"><div class="obar"></div><div>'
+          +'<div class="ot">'+t.frase+(o.comNome?' · com '+o.comNome:"")+'</div>'
+          +(o.obs?'<div class="om">'+esc(o.obs)+'</div>':"")
+          +'<div class="od">dia '+o.dia+' · '+o.hora+' · registrado por '+o.por+'</div>'
+          +'</div></div>';
+      }).join("")
+    : '<div class="occ-empty">Nenhuma ocorrência registrada. O registro descreve o que aconteceu — '
+      +'ele não altera a coleira nem bloqueia o convívio.</div>';
+  var occBlock='<div class="section-t">Ocorrências'+(occs.length?' · '+occs.length:"")+'</div>'
+    +'<div class="info-block">'+occHtml
+    +'<div class="occ-add"><button class="mini-btn" onclick="abrirOcorrencia(\''+p.id+'\')">'
+    +IC.plus+' Registrar ocorrência</button></div></div>';
+
+  var histBlock="";
+  if(p.historico.length){
+    histBlock='<div class="section-t">Histórico</div><div class="info-block">'
+      +p.historico.slice(0,6).map(function(h){
+        return '<div class="hist"><span class="hd">dia '+h.dia+' · '+h.hora+'</span>'+h.texto+'</div>';
+      }).join("")+'</div>';
+  }
+
+  var acoes = p.present
+    ? '<div class="footer-actions"><button class="btn-secondary" onclick="abrirEdicao(\''+p.id+'\')">Editar prontuário</button>'
+      +'<button class="btn-primary" onclick="abrirCheckout(\''+p.id+'\')">Registrar saída</button></div>'
+    : '<div class="footer-actions"><button class="btn-secondary" onclick="abrirEdicao(\''+p.id+'\')">Editar prontuário</button></div>';
+
+  return '<button class="back" onclick="nav(\'home\')">'+IC.back+' Painel do dia</button>'
+    +'<div class="pet-head"><div class="av">'+p.emoji+'</div>'
+    +'<div><div class="pn">'+p.nome+'</div><div class="pr">'+p.raca+'</div>'
+    +'<div class="collar-line"><span class="puck '+c+'"></span>Coleira '+nomeCor(c)+'</div></div></div>'
+    +pendBanner+reactBanner
+    +'<div class="section-t">Tarefas de hoje</div><div class="tasks">'+tasksHtml+'</div>'
+    +'<div class="section-t">Prontuário</div>'+dietaBlock+medBlock+compBlock+statusBlock
+    +occBlock
+    +'<div class="section-t">Tutores · contatos</div><div class="info-block">'+tutoresHtml+'</div>'
+    +histBlock+acoes;
+}
+function linhaTarefa(p,t,bloqueada){
+  var icon=t.tipo==="med"?IC.pill:IC.food;
+  var cls="", meta=t.hora, btn="";
+  if(t.na){
+    cls=" na"; meta="não administrada · "+t.na.hora+" · "+t.na.motivo;
+    btn='<button class="check-btn na" title="Registrada como não administrada">'+IC.warn+'</button>';
+  } else if(t.done){
+    cls=" done"; meta="✓ "+t.at+" · por "+t.by;
+    btn='<button class="check-btn done" onclick="toggleTask(\''+p.id+'\',\''+t.id+'\')">'+IC.check+'</button>';
+  } else if(bloqueada){
+    meta="não se aplica — sem check-in";
+    btn='<button class="check-btn" disabled>'+IC.check+'</button>';
+  } else {
+    if(atrasada(t)) meta=t.hora+" · atrasada";
+    btn='<button class="check-btn" onclick="toggleTask(\''+p.id+'\',\''+t.id+'\')">'+IC.check+'</button>';
+  }
+  var contador = (t.disparos||t.adiamentos)
+    ? '<div class="tcount">'+t.disparos+' disparo'+(t.disparos===1?"":"s")+' · '+t.adiamentos+' adiamento'+(t.adiamentos===1?"":"s")+'</div>'
+    : '';
+  return '<div class="task'+cls+'">'
+    +'<div class="ti" style="color:'+(t.tipo==="med"?"var(--red)":"var(--amber)")+'">'+icon+'</div>'
+    +'<div><div class="tl">'+labelTarefa(p,t)+'</div><div class="th">'+meta+'</div>'+contador+'</div>'
+    +btn+'</div>';
+}
+function infoBlock(label,val){ return '<div class="info-block"><div class="il">'+label+'</div><div class="iv">'+val+'</div></div>'; }
+
+function toggleTask(petId,taskId){
+  var p=petById(petId), t=tarefaPorId(p,taskId);
+  if(!p.present || t.na) return;
+  t.done=!t.done;
+  t.at=t.done?relogio:null;
+  t.by=t.done?assinatura():null;
+  if(t.done){
+    cancelarAlertaDa(t);
+    pushHist(p,(t.tipo==="med"?"Dose confirmada":"Alimentação registrada")+": "+labelTarefa(p,t)+" (prevista "+t.hora+")");
+    toast((t.tipo==="med"?"Dose confirmada":"Alimentação registrada")+" · por "+assinatura());
+  } else {
+    pushHist(p,"Marcação desfeita: "+labelTarefa(p,t));
+  }
+  updateBellDot();
+  render();
+}
+function permaneceu(id){
+  var p=petById(id);
+  p.checkoutPendente=false;
+  pushHist(p,"Pendência resolvida: o pet permaneceu na creche");
+  toast(p.nome+" segue na creche");
+  render();
+}
+
+/* ---- Cadastro e edição (H2 + H11) ---- */
+function renderCadastro(){
+  var f=state.form;
+  var edicao=!!f.editId;
+  var cor = f.reativo?"r":((f.med||f.dieta||(f.alergia&&f.alergia.trim()))?"a":"g");
+
+  var dietaHorasHtml = f.dietaHoras.map(function(h,i){
+    var rem = f.dietaHoras.length>1 ? '<button class="hora-remove" onclick="removeDietaHora('+i+')" title="Remover horário">&times;</button>' : '';
+    return '<div class="hora-row"><input type="time" id="f_dietaHora_'+i+'" value="'+h+'">'+rem+'</div>';
+  }).join("");
+  var dietaFields = f.dieta ? '<div class="nested">'
+    +'<div class="row2">'+campo("dietaRacao","Ração","Ex.: Ração sem grãos")
+    +campo("dietaPorcao","Porção","Ex.: 200g")+'</div>'
+    +'<div class="field"><label>Horários das refeições</label>'+dietaHorasHtml
+    +'<button class="add-hora" onclick="addDietaHora()">'+IC.plus+' Horário</button></div></div>' : '';
+
+  var medHorasHtml = f.medHoras.map(function(h,i){
+    var rem = f.medHoras.length>1 ? '<button class="hora-remove" onclick="removeMedHora('+i+')" title="Remover horário">&times;</button>' : '';
+    return '<div class="hora-row"><input type="time" id="f_medHora_'+i+'" value="'+h+'">'+rem+'</div>';
+  }).join("");
+  var medFields = f.med ? '<div class="nested">'
+    +campo("medNome","Medicamento","Ex.: Apoquel 5mg")
+    +campo("medDose","Dose","Ex.: 1 comprimido")
+    +'<div class="field"><label>Horários das doses</label>'+medHorasHtml
+    +'<button class="add-hora" onclick="addMedHora()">'+IC.plus+' Horário</button></div></div>' : '';
+
+  var reativoFields = f.reativo ? '<div class="nested">'
+    +campo("reativoObs","Observações de manejo","Ex.: isolar do grupo · guia curta")+'</div>' : '';
+
+  var tutoresHtml = f.tutores.map(function(t,i){
+    var rem = f.tutores.length>1 ? '<button class="tutor-remove" onclick="removeTutor('+i+')">Remover</button>' : '';
+    return '<div class="nested">'
+      +'<div class="tutor-card-head"><span class="tutor-idx">Tutor '+(i+1)+(i===0?' · emergência':'')+'</span>'+rem+'</div>'
+      +campoTutor(i,"nome","Nome","Nome do tutor")
+      +'<div class="row2">'+campoTutor(i,"rel","Relação","Ex.: Tutora")
+      +campoTutor(i,"tel","Telefone","11 90000-0000")+'</div>'
+      +'</div>';
+  }).join("");
+
+  var ativoRow = edicao ? toggleRow("ativo","Pet ativo na creche","desligado fica na lista, em cinza") : "";
+
+  return '<button class="back" onclick="nav(\''+(edicao?"detail":"home")+'\')">'+IC.back+' Cancelar</button>'
+    +'<h1>'+(edicao?"Editar prontuário":"Novo pet")+'</h1>'
+    +'<div class="sub" style="margin-top:4px;margin-bottom:20px">A coleira é derivada do que você preenche.</div>'
+    +campo("nome","Nome","Ex.: Rex")
+    +'<div class="row2">'+campo("raca","Raça","Ex.: Labrador")+campo("idade","Idade","Ex.: 3 anos")+'</div>'
+    +'<div class="section-t">Tutores · contatos</div>'+tutoresHtml
+    +'<button class="add-btn" onclick="addTutor()">'+IC.plus+' Adicionar tutor</button>'
+    +'<div class="section-t">Apontamentos de cuidado</div>'
+    +campo("alergia","Alergia (se houver)","Ex.: Frango")
+    +toggleRow("dieta","Dieta específica","ração, porção e horários")+dietaFields
+    +toggleRow("med","Medicação","remédios com horários — disparam alerta")+medFields
+    +toggleRow("reativo","Reativo / agressivo","coleira vermelha · isolamento")+reativoFields
+    +ativoRow
+    +'<div class="collar-preview"><div class="big-puck" style="background:'+corVar(cor)+'"></div>'
+    +'<div><div class="cpt">Coleira prevista</div><div class="cpv" style="color:'+corVar(cor)+'">'+nomeCor(cor).toUpperCase()+'</div></div></div>'
+    +'<button class="btn-primary" onclick="salvarPet()">'+(edicao?"Salvar alterações":"Salvar prontuário")+'</button>';
+}
+function campo(key,label,ph){
+  var f=state.form, err=f.erros[key];
+  return '<div class="field'+(err?" err":"")+'"><label>'+label+'</label>'
+    +'<input type="text" id="f_'+key+'" value="'+esc(f[key])+'" placeholder="'+ph+'">'
+    +(err?'<div class="err-msg">'+err+'</div>':'')+'</div>';
+}
+function campoTutor(i,key,label,ph){
+  var f=state.form, err=f.erros["tutor_"+i+"_"+key];
+  return '<div class="field'+(err?" err":"")+'"><label>'+label+'</label>'
+    +'<input type="text" id="f_tutor_'+key+'_'+i+'" value="'+esc(f.tutores[i][key])+'" placeholder="'+ph+'">'
+    +(err?'<div class="err-msg">'+err+'</div>':'')+'</div>';
+}
+function toggleRow(key,title,desc){
+  var on=state.form[key]?" on":"";
+  return '<div class="toggle-row"><div><div class="tt">'+title+'</div><div class="td">'+desc+'</div></div>'
+    +'<div class="switch'+on+'" onclick="toggleForm(\''+key+'\')"></div></div>';
+}
+/* serve tanto para atributo (value="…") quanto para texto livre (observação da ocorrência) */
+function esc(s){
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function captureForm(){
+  var f=state.form;
+  ["nome","raca","idade","alergia","dietaRacao","dietaPorcao","medNome","medDose","reativoObs"].forEach(function(k){
+    var e=document.getElementById("f_"+k); if(e) f[k]=e.value;
+  });
+  (f.tutores||[]).forEach(function(t,i){
+    ["nome","rel","tel"].forEach(function(k){
+      var e=document.getElementById("f_tutor_"+k+"_"+i); if(e) t[k]=e.value;
+    });
+  });
+  (f.dietaHoras||[]).forEach(function(h,i){ var e=document.getElementById("f_dietaHora_"+i); if(e) f.dietaHoras[i]=e.value; });
+  (f.medHoras||[]).forEach(function(h,i){ var e=document.getElementById("f_medHora_"+i); if(e) f.medHoras[i]=e.value; });
+}
+function addTutor(){ captureForm(); state.form.tutores.push({nome:"",rel:"",tel:""}); render(); }
+function removeTutor(i){ captureForm(); state.form.tutores.splice(i,1); render(); }
+function addDietaHora(){ captureForm(); state.form.dietaHoras.push("12:00"); render(); }
+function removeDietaHora(i){ captureForm(); state.form.dietaHoras.splice(i,1); render(); }
+function addMedHora(){ captureForm(); state.form.medHoras.push("14:00"); render(); }
+function removeMedHora(i){ captureForm(); state.form.medHoras.splice(i,1); render(); }
+function openCadastro(){ state.form=novoForm(); nav("cadastro"); }
+function toggleForm(key){ captureForm(); state.form[key]=!state.form[key]; render(); }
+
+function abrirEdicao(id){
+  var p=petById(id);
+  var f=novoForm();
+  var partes=(p.raca||"").split(" · ");
+  f.editId=p.id; f.nome=p.nome; f.raca=partes[0]||""; f.idade=partes[1]||"";
+  f.alergia=p.alergia||""; f.ativo=p.ativo!==false;
+  f.tutores=p.tutores.map(function(t){ return {nome:t.nome, rel:t.rel, tel:t.tel}; });
+  f.dieta=!!(p.comidas&&p.comidas.length);
+  if(f.dieta){ f.dietaRacao=p.dietaRacao||""; f.dietaPorcao=p.dietaPorcao||"";
+    f.dietaHoras=p.comidas.map(function(c){return c.hora;}); }
+  f.med=!!(p.meds&&p.meds.length);
+  if(f.med){ f.medNome=p.meds[0].nome; f.medDose=p.meds[0].dose;
+    f.medHoras=p.meds.map(function(m){return m.hora;}); }
+  f.reativo=!!p.reativo; f.reativoObs=p.obs||"";
+  state.form=f;
+  nav("cadastro");
+}
+
+/* Validação — o app não inventa dado que faltou (H2 · CA5 e CA6) */
+function validarForm(){
+  var f=state.form, e={};
+  if(!f.nome || !f.nome.trim()) e.nome="Informe o nome do pet";
+  var temTutor=false;
+  f.tutores.forEach(function(t,i){
+    if(t.nome && t.nome.trim()){
+      temTutor=true;
+      if(!t.tel || !t.tel.trim()) e["tutor_"+i+"_tel"]="Telefone é obrigatório";
+    }
+  });
+  if(!temTutor) e["tutor_0_nome"]="Cadastre ao menos um tutor";
+  if(f.dieta && (!f.dietaRacao || !f.dietaRacao.trim())) e.dietaRacao="Informe a ração";
+  if(f.med){
+    if(!f.medNome || !f.medNome.trim()) e.medNome="Informe o medicamento";
+    if(!f.medDose || !f.medDose.trim()) e.medDose="Informe a dose";
+  }
+  f.erros=e;
+  return Object.keys(e).length===0;
+}
+
+function salvarPet(){
+  captureForm();
+  if(!validarForm()){ render(); toast("Faltam campos obrigatórios"); return; }
+  var f=state.form;
+  var raca=[f.raca,f.idade].filter(Boolean).join(" · ")||"Cadastrado agora";
+  var tutores=f.tutores.filter(function(t){return t.nome && t.nome.trim();})
+    .map(function(t,i){ return {nome:t.nome, rel:t.rel||"Tutor(a)", emerg:i===0, tel:t.tel}; });
+
+  if(f.editId){
+    var p=petById(f.editId);
+    var antes=corDoPet(p);
+    p.nome=f.nome; p.raca=raca; p.tutores=tutores; p.ativo=f.ativo;
+    p.alergia=(f.alergia&&f.alergia.trim())?f.alergia:null;
+    p.comidas=sincronizaTarefas(p.comidas, f.dieta?f.dietaHoras:[], function(h){return C(h);});
+    p.dietaRacao=f.dieta?f.dietaRacao:null;
+    p.dietaPorcao=f.dieta?f.dietaPorcao:null;
+    p.meds=sincronizaTarefas(p.meds, f.med?f.medHoras:[], function(h){return M(f.medNome,f.medDose,h);});
+    (p.meds||[]).forEach(function(m){ m.nome=f.medNome||m.nome; m.dose=f.medDose||m.dose; });
+    p.reativo=f.reativo; p.obs=f.reativo?(f.reativoObs||"Reativo · isolar do grupo"):null;
+    if(!p.ativo){ p.present=false; }
+    var depois=corDoPet(p);
+    pushHist(p,"Prontuário editado"+(antes!==depois?" · coleira "+nomeCor(antes)+" → "+nomeCor(depois):""));
+    state.petId=p.id;
+    state.form=novoForm();
+    nav("detail");
+    updateBellDot();
+    if(antes!==depois && p.present) sheetTrocarColeira(p,depois);
+    else toast(p.nome+" atualizado"+(antes!==depois?" · coleira "+nomeCor(depois):""));
+    return;
+  }
+
+  var novo={ id:"p"+Date.now(), nome:f.nome, emoji:"🐕", raca:raca, present:false, ativo:true,
+    reativo:f.reativo, dietaRacao:f.dieta?f.dietaRacao:null, dietaPorcao:f.dieta?f.dietaPorcao:null,
+    comidas:f.dieta?f.dietaHoras.map(function(h){return C(h);}):[],
+    alergia:(f.alergia&&f.alergia.trim())?f.alergia:null,
+    meds:f.med?f.medHoras.map(function(h){return M(f.medNome,f.medDose,h);}):[],
+    obs:f.reativo?(f.reativoObs||"Reativo · isolar do grupo"):null,
+    historico:[], ocorrencias:[], tutores:tutores };
+  pets.push(novo);
+  pushHist(novo,"Prontuário criado · coleira "+nomeCor(corDoPet(novo)));
+  state.form=novoForm();
+  toast(novo.nome+" cadastrado · coleira "+nomeCor(corDoPet(novo)));
+  nav("checkin");
+}
+/* mantém o que já aconteceu hoje e só ajusta os horários (H11 · CA3) */
+function sincronizaTarefas(atuais, horas, criar){
+  atuais=atuais||[];
+  var out=[];
+  horas.forEach(function(h){
+    var achada=null;
+    atuais.forEach(function(t){ if(!achada && t.hora===h && out.indexOf(t)<0) achada=t; });
+    out.push(achada||criar(h));
+  });
+  return out;
+}
+function sheetTrocarColeira(p,c){
+  var ov=document.getElementById("overlay");
+  ov.innerHTML='<div class="alert-sheet"><div class="grip"></div>'
+    +'<div class="sheet-collar" style="background:'+corVar(c)+'">'+IC.paw+'</div>'
+    +'<h2>Troque a coleira</h2>'
+    +'<div class="asub">'+p.nome+' está na creche e mudou de risco</div>'
+    +'<div class="alert-detail" style="background:var(--surface-2)"><div class="amed" style="color:'+corVar(c)+'">Coleira '+nomeCor(c).toUpperCase()+'</div>'
+    +'<div class="adose">'+subtituloPet(p)+'</div></div>'
+    +'<button class="btn-primary" onclick="closeOverlay()">Troquei a coleira</button></div>';
+  ov.classList.add("show");
+}
+
+/* ---- Check-in (H3) ---- */
+function renderCheckin(){
+  var ausentes=pets.filter(function(p){return !p.present && p.ativo!==false;});
+  var inativos=pets.filter(function(p){return p.ativo===false;});
+  var lista="";
+  if(ausentes.length===0){
+    lista='<div class="empty">Todos os pets já estão presentes hoje.</div>';
+  } else {
+    ausentes.forEach(function(p){
+      var c=corDoPet(p);
+      lista+='<div class="pet-card '+c+'" onclick="startCheckin(\''+p.id+'\')">'
+        +'<div class="av">'+p.emoji+'</div>'
+        +'<div><div class="pn">'+p.nome+'</div><div class="pi">'+subtituloPet(p)+'</div></div>'
+        +'<div class="right"><span class="badge '+c+'">'+nomeCor(c)+'</span></div></div>';
+    });
+  }
+  var inativosHtml="";
+  if(inativos.length){
+    inativosHtml='<div class="section-t">Inativos</div><div class="pet-list">'
+      +inativos.map(function(p){
+        return '<div class="pet-card off" onclick="nav(\'detail\',{petId:\''+p.id+'\'})">'
+          +'<div class="av">'+p.emoji+'</div>'
+          +'<div><div class="pn">'+p.nome+'</div><div class="pi">não frequenta mais a creche</div></div>'
+          +'<div class="right"><span class="badge gray">inativo</span></div></div>';
+      }).join("")+'</div>';
+  }
+  return '<div class="eyebrow">Check-in</div><h1 style="margin-top:6px">Quem chegou?</h1>'
+    +'<div class="sub" style="margin-top:4px">Selecione o pet para registrar a entrada.</div>'
+    +'<div class="checkin-pick">'+lista+'</div>'+inativosHtml;
+}
+function startCheckin(id){ state.checkinPet=id; nav("checkin-confirm"); }
+
+function renderCheckinConfirm(){
+  var p=petById(state.checkinPet);
+  var c=corDoPet(p);
+  var reforco = p.reativo ? '<div class="appt" style="background:var(--red-tint);border-color:var(--red)">⚠️ '+ (p.obs||"Isolar do grupo") +'</div>' : "";
+  return '<button class="back" onclick="nav(\'checkin\')">'+IC.back+' Voltar</button>'
+    +'<div class="instruct">'
+    +'<div class="big-collar" style="background:'+corVar(c)+'">'+IC.paw+'</div>'
+    +'<div class="il1">Registrando a chegada de</div>'
+    +'<div class="il2">Coleira <span class="cc" style="color:'+corVar(c)+'">'+nomeCor(c).toUpperCase()+'</span></div>'
+    +'<div class="il1">em <b>'+p.nome+'</b></div>'
+    +'<div class="appt">'+subtituloPet(p)+'</div>'+reforco
+    +'<button class="btn-primary" onclick="confirmCheckin(\''+p.id+'\')">Confirmar presença</button>'
+    +'</div>';
+}
+function confirmCheckin(id){
+  var p=petById(id);
+  p.present=true; p.checkinAt=relogio; p.checkoutPendente=false;
+  pushHist(p,"Check-in · coleira "+nomeCor(corDoPet(p)));
+  toast(p.nome+" está presente");
+  updateBellDot();
+  nav("home");
+}
+
+/* ---- Check-out (H8 + H9) ---- */
+function abrirCheckout(id){
+  state.checkout={petId:id, quem:null, terceiro:false, autorizadoPor:null};
+  nav("checkout");
+}
+function renderCheckout(){
+  var co=state.checkout, p=petById(co.petId);
+  var pend=tarefasPendentes(p);
+
+  var bloqueio="";
+  if(pend.length){
+    var itens=pend.map(function(t){
+      return '<div class="bitem"><div class="bl">'+labelTarefa(p,t)+'</div>'
+        +'<div class="bh">prevista '+t.hora+(atrasada(t)?" · atrasada":"")+'</div>'
+        +'<button class="mini-btn" onclick="concluirNoCheckout(\''+p.id+'\',\''+t.id+'\')">Concluir agora</button>'
+        +'<button class="mini-btn" onclick="abrirNaoAdministrada(\''+p.id+'\',\''+t.id+'\')">Não administrada</button></div>';
+    }).join("");
+    bloqueio='<div class="block-warn"><div class="bt">'+IC.warn+' Saída bloqueada — '
+      +pend.length+' pendência'+(pend.length>1?"s":"")+'</div>'
+      +'<div class="bd">Resolva a tarefa, ou registre que ela não foi realizada avisando quem está retirando o pet.</div>'
+      +itens+'</div>';
+  }
+
+  var tutoresPick=p.tutores.map(function(t,i){
+    var on=(!co.terceiro && co.quem===i)?" on":"";
+    return '<div class="pick-item'+on+'" onclick="escolherQuem('+i+')">'
+      +'<div><div class="pkn">'+t.nome+'</div><div class="pkr">'+t.rel+'</div></div>'
+      +'<div class="pkright"><span class="radio"></span></div></div>';
+  }).join("");
+  var terceiroPick='<div class="pick-item'+(co.terceiro?" on":"")+'" onclick="escolherTerceiro()">'
+    +'<div><div class="pkn">Outra pessoa</div><div class="pkr">exige autorização de um tutor</div></div>'
+    +'<div class="pkright"><span class="radio"></span></div></div>';
+
+  var autoriza="";
+  if(co.terceiro){
+    var opcoes=p.tutores.map(function(t,i){
+      var on=(co.autorizadoPor===i)?" on":"";
+      return '<div class="pick-item'+on+'" onclick="escolherAutorizador('+i+')">'
+        +'<div><div class="pkn">'+t.nome+'</div><div class="pkr">'+t.rel+'</div></div>'
+        +'<div class="pkright">'
+        +'<a class="call" href="tel:'+t.tel.replace(/\s/g,"")+'" onclick="event.stopPropagation();toast(\'Ligando para '+t.nome+'\')">'+IC.phone+'</a>'
+        +'<span class="radio"></span></div></div>';
+    }).join("");
+    autoriza='<div class="section-t">Quem autorizou a saída?</div>'
+      +'<div class="sheet-note">Ligue para um tutor cadastrado. Sem autorização, a saída não é registrada.</div>'
+      +'<div class="pick">'+opcoes+'</div>';
+  }
+
+  var ok = pend.length===0 && (co.terceiro ? co.autorizadoPor!==null : co.quem!==null);
+  var motivo="";
+  if(pend.length) motivo="Resolva as pendências acima";
+  else if(co.terceiro && co.autorizadoPor===null) motivo="Selecione quem autorizou a saída";
+  else if(!co.terceiro && co.quem===null) motivo="Selecione quem está retirando";
+
+  return '<button class="back" onclick="nav(\'detail\',{petId:\''+p.id+'\'})">'+IC.back+' '+p.nome+'</button>'
+    +'<div class="eyebrow">Check-out</div>'
+    +'<h1 style="margin-top:6px">Quem está levando '+p.nome+'?</h1>'
+    +'<div class="sub" style="margin-top:4px">A retirada é sempre registrada em nome de um tutor cadastrado.</div>'
+    +bloqueio
+    +'<div class="section-t">Tutores do pet</div><div class="pick">'+tutoresPick+terceiroPick+'</div>'
+    +autoriza
+    +'<button class="btn-primary" '+(ok?'':'disabled')+' onclick="confirmarCheckout()">Confirmar saída</button>'
+    +(ok?'':'<div class="sub" style="text-align:center;margin-top:10px;font-size:12.5px">'+motivo+'</div>');
+}
+function escolherQuem(i){ state.checkout.quem=i; state.checkout.terceiro=false; state.checkout.autorizadoPor=null; render(); }
+function escolherTerceiro(){ state.checkout.terceiro=true; state.checkout.quem=null; render(); }
+function escolherAutorizador(i){ state.checkout.autorizadoPor=i; render(); }
+
+function concluirNoCheckout(petId,taskId){
+  var p=petById(petId), t=tarefaPorId(p,taskId);
+  t.done=true; t.at=relogio; t.by=assinatura();
+  cancelarAlertaDa(t);
+  pushHist(p,"Tarefa concluída no check-out: "+labelTarefa(p,t));
+  toast("Registrado · por "+assinatura());
+  updateBellDot();
+  render();
+}
+function abrirNaoAdministrada(petId,taskId){
+  var p=petById(petId), t=tarefaPorId(p,taskId);
+  var ov=document.getElementById("overlay");
+  ov.innerHTML='<div class="alert-sheet"><div class="grip"></div>'
+    +'<div class="alert-icon" style="background:var(--amber)">'+IC.warn+'</div>'
+    +'<h2>Não administrada</h2>'
+    +'<div class="asub">'+labelTarefa(p,t)+' · prevista '+t.hora+'</div>'
+    +'<div class="alert-detail" style="background:var(--amber-tint);text-align:left">'
+    +'<div class="sheet-note" style="margin:0">Isso fica no histórico do pet como cuidado <b>não realizado</b>. '
+    +'Avise quem está retirando — o tutor não recebe aviso pelo app.</div></div>'
+    +'<div class="field sheet-field"><label>Motivo</label>'
+    +'<input type="text" id="na_motivo" placeholder="Ex.: pet recusou a dose"></div>'
+    +'<button class="btn-primary" onclick="confirmarNaoAdministrada(\''+p.id+'\',\''+t.id+'\')">Registrar e avisar</button>'
+    +'<button class="btn-secondary" onclick="closeOverlay()">Cancelar</button></div>';
+  ov.classList.add("show");
+}
+function confirmarNaoAdministrada(petId,taskId){
+  var p=petById(petId), t=tarefaPorId(p,taskId);
+  var e=document.getElementById("na_motivo");
+  var motivo=(e&&e.value.trim())?e.value.trim():"sem motivo informado";
+  t.na={motivo:motivo, hora:relogio, avisado:true};
+  cancelarAlertaDa(t);
+  pushHist(p,"NÃO administrada: "+labelTarefa(p,t)+" (prevista "+t.hora+") · motivo: "+motivo+" · tutor avisado no balcão");
+  closeOverlay();
+  updateBellDot();
+  toast("Registrado como não administrada");
+  render();
+}
+function confirmarCheckout(){
+  var co=state.checkout, p=petById(co.petId);
+  if(tarefasPendentes(p).length) return;
+  var texto;
+  if(co.terceiro){
+    if(co.autorizadoPor===null) return;
+    texto="Check-out por terceiro · autorizado por "+p.tutores[co.autorizadoPor].nome;
+  } else {
+    if(co.quem===null) return;
+    texto="Check-out · retirado por "+p.tutores[co.quem].nome;
+  }
+  p.present=false; p.checkoutPendente=false; p.checkoutAt=relogio;
+  pushHist(p,texto);
+  toast(p.nome+" saiu · "+relogio);
+  updateBellDot();
+  nav("home");
+}
+
+/* ---- Alerta de medicação (H7) ---- */
+function fireAlert(taskId){
+  /* não sequestra a tela se o registro de ocorrência está aberto — reagenda e insiste depois */
+  if(state.occ){
+    cancelarAlerta();
+    alertaTimer=setTimeout(function(){ fireAlert(taskId); }, RE_ALERTA_MS);
+    return;
+  }
+  var alvo=null;
+  presentes().forEach(function(p){
+    (p.meds||[]).forEach(function(m){
+      if(alvo) return;
+      if(!pendente(m)) return;
+      if(taskId && m.id!==taskId) return;
+      alvo={p:p, m:m};
+    });
+  });
+  if(!alvo){ toast("Nenhuma medicação pendente 🎉"); return; }
+  var p=alvo.p, m=alvo.m;
+  m.disparos++;
+  var podeAdiar = m.adiamentos < MAX_ADIAMENTOS;
+  var ov=document.getElementById("overlay");
+  ov.innerHTML='<div class="alert-sheet"><div class="grip"></div>'
+    +'<div class="alert-icon">'+IC.alert+'</div>'
+    +'<h2>Hora do remédio</h2><div class="asub">'+p.nome+' precisa da medicação agora</div>'
+    +'<div class="alert-detail"><div class="amed">'+m.nome+'</div><div class="adose">'+m.dose+'</div>'
+    +'<div class="atime">'+IC.clock+' agendado '+m.hora+' · registra quem e quando</div></div>'
+    +'<button class="btn-primary" onclick="confirmDose(\''+p.id+'\',\''+m.id+'\')">Confirmar dose</button>'
+    +(podeAdiar
+      ? '<button class="btn-secondary" onclick="snoozeDose(\''+p.id+'\',\''+m.id+'\')">Adiar 5 min</button>'
+        +(m.adiamentos?'<div class="adiado">adiado '+m.adiamentos+' de '+MAX_ADIAMENTOS+'</div>':'')
+      : '<div class="nosnooze">Adiado '+MAX_ADIAMENTOS+' vezes — não é mais possível adiar.<br>O alerta continua a cada 5 min até a dose ser resolvida.</div>')
+    +'</div>';
+  ov.classList.add("show");
+  state.alertaAtivo={petId:p.id, taskId:m.id};
+}
+function confirmDose(petId,taskId){
+  var p=petById(petId), m=tarefaPorId(p,taskId);
+  m.done=true; m.at=relogio; m.by=assinatura();
+  cancelarAlertaDa(m);
+  state.alertaAtivo=null;
+  closeOverlay();
+  pushHist(p,"Dose confirmada: "+m.nome+" (prevista "+m.hora+")"
+    +(m.adiamentos?" · "+m.adiamentos+" adiamento(s)":"")
+    +(minutos(relogio)>minutos(m.hora)?" · com atraso":""));
+  updateBellDot();
+  toast("Dose de "+p.nome+" confirmada · por "+assinatura());
+  render();
+}
+function snoozeDose(petId,taskId){
+  var p=petById(petId), m=tarefaPorId(p,taskId);
+  if(m.adiamentos>=MAX_ADIAMENTOS) return;
+  m.adiamentos++;
+  pushHist(p,"Dose adiada ("+m.adiamentos+"/"+MAX_ADIAMENTOS+"): "+m.nome);
+  fecharEReagendar(p.id,m.id,"Adiado 5 min ("+m.adiamentos+" de "+MAX_ADIAMENTOS+")");
+}
+/* fechar sem resolver também não encerra a insistência (H7 · CA3) */
+function fecharEReagendar(petId,taskId,msg){
+  closeOverlay();
+  state.alertaAtivo=null;
+  avancar(PASSO_MIN);
+  cancelarAlerta();
+  alertaTimer=setTimeout(function(){ fireAlert(taskId); }, RE_ALERTA_MS);
+  toast(msg);
+  render();
+}
+function cancelarAlerta(){ if(alertaTimer){ clearTimeout(alertaTimer); alertaTimer=null; } }
+function cancelarAlertaDa(t){
+  if(state.alertaAtivo && state.alertaAtivo.taskId===t.id){ state.alertaAtivo=null; cancelarAlerta(); }
+}
+/* ============ REGISTRAR OCORRÊNCIA ============ */
+function abrirOcorrencia(petId){
+  state.occ={petId:petId, tipo:null, com:null, obs:""};
+  renderOcorrencia();
+}
+function renderOcorrencia(){
+  var o=state.occ, p=petById(o.petId);
+  var t=o.tipo?tipoOcorrencia(o.tipo):null;
+
+  var tipos=TIPOS_OCORRENCIA.map(function(x){
+    return '<div class="type-chip'+(o.tipo===x.id?" on":"")+'" onclick="setOccTipo(\''+x.id+'\')">'
+      +'<span class="sv '+x.sev+'"></span>'+x.label+'</div>';
+  }).join("");
+
+  var envolvido="";
+  if(t && t.dupla){
+    var outros=presentes().filter(function(q){return q.id!==p.id;});
+    envolvido='<div class="section-t">Outro cão envolvido · opcional</div><div class="pick">'
+      +outros.map(function(q){
+          return '<div class="pick-item'+(o.com===q.id?" on":"")+'" onclick="setOccCom(\''+q.id+'\')">'
+            +'<div><div class="pkn">'+q.emoji+' '+q.nome+'</div><div class="pkr">'+q.raca+'</div></div>'
+            +'<div class="pkright"><span class="radio"></span></div></div>';
+        }).join("")
+      +'<div class="pick-item'+(o.com===null?" on":"")+'" onclick="setOccCom(null)">'
+      +'<div><div class="pkn">Nenhum outro cão</div><div class="pkr">ocorrência individual</div></div>'
+      +'<div class="pkright"><span class="radio"></span></div></div>'
+      +'</div>';
+  }
+
+  var ov=document.getElementById("overlay");
+  ov.innerHTML='<div class="alert-sheet occ-sheet"><div class="grip"></div>'
+    +'<h2>Registrar ocorrência</h2>'
+    +'<div class="sheet-note">'+p.nome+' · dia '+dia+' · '+relogio+'</div>'
+    +'<div class="section-t">O que aconteceu</div><div class="type-grid">'+tipos+'</div>'
+    +envolvido
+    +'<div class="field" style="margin-top:16px"><label>Observação</label>'
+    +'<textarea id="occObs" placeholder="O que você viu e o que foi feito." '
+    +'oninput="state.occ.obs=this.value">'+esc(o.obs)+'</textarea></div>'
+    +'<div class="no-collar">'+IC.warn+'<div>Este registro <b>não altera a coleira</b> nem bloqueia o '
+    +'convívio. Ele descreve o que aconteceu — quem decide o manejo é a creche.</div></div>'
+    +'<button class="btn-primary"'+(o.tipo?"":" disabled")
+    +' onclick="salvarOcorrencia()">Registrar</button>'
+    +'<button class="btn-secondary" onclick="fecharOcorrencia()">Cancelar</button>'
+    +'</div>';
+  ov.classList.add("show");
+}
+function setOccTipo(id){
+  state.occ.tipo=id;
+  if(!tipoOcorrencia(id).dupla) state.occ.com=null;
+  renderOcorrencia();
+}
+function setOccCom(id){ state.occ.com=id; renderOcorrencia(); }
+function fecharOcorrencia(){ state.occ=null; closeOverlay(); }
+function salvarOcorrencia(){
+  var o=state.occ; if(!o||!o.tipo) return;
+  var p=petById(o.petId), t=tipoOcorrencia(o.tipo);
+  var outro=o.com?petById(o.com):null;
+  var obs=(o.obs||"").trim();
+
+  function grava(alvo,parceiro){
+    alvo.ocorrencias=alvo.ocorrencias||[];
+    alvo.ocorrencias.unshift({dia:dia, hora:relogio, tipo:o.tipo,
+      com:parceiro?parceiro.id:null, comNome:parceiro?parceiro.nome:null,
+      obs:obs, por:assinatura()});
+    pushHist(alvo,"Ocorrência: "+t.frase+(parceiro?" · com "+parceiro.nome:""));
+  }
+  grava(p,outro);
+  /* o registro vale para os dois lados — é o que forma o histórico de convivência */
+  if(outro) grava(outro,p);
+
+  state.occ=null;
+  closeOverlay();
+  toast("Ocorrência registrada"+(outro?" para "+p.nome+" e "+outro.nome:"")+" · por "+assinatura());
+  render();
+}
+
+function closeOverlay(){ var ov=document.getElementById("overlay"); ov.classList.remove("show"); ov.innerHTML=""; }
+document.getElementById("overlay").addEventListener("click",function(e){
+  if(e.target!==this) return;
+  if(state.alertaAtivo){
+    var a=state.alertaAtivo;
+    fecharEReagendar(a.petId,a.taskId,"O alerta volta em 5 min");
+    return;
+  }
+  if(state.occ){ fecharOcorrencia(); return; }
+  closeOverlay();
+});
+
+function updateBellDot(){
+  var pend=false;
+  presentes().forEach(function(p){ (p.meds||[]).forEach(function(m){ if(pendente(m)) pend=true; }); });
+  document.getElementById("bellDot").style.display=pend?"block":"none";
+}
+
+/* ---- Virada do dia (H12) — clique no relógio do cabeçalho ---- */
+function virarDia(){
+  if(!state.logado) return;
+  cancelarAlerta();
+  state.alertaAtivo=null;
+  dia++;
+  relogio="07:30";
+  pets.forEach(function(p){
+    tarefasDoPet(p).forEach(function(t){
+      if(pendente(t)) pushHist(p,"Não realizada no dia "+(dia-1)+": "+labelTarefa(p,t)+" ("+t.hora+")");
+      t.done=false; t.at=null; t.by=null; t.na=null; t.disparos=0; t.adiamentos=0;
+    });
+    if(p.present){
+      p.checkoutPendente=true;
+      pushHist(p,"Virou o dia sem check-out registrado");
+    }
+  });
+  pintarRelogio();
+  state.filter="all";
+  toast("Dia "+dia+" · alertas de ontem encerrados");
+  updateBellDot();
+  nav("home");
+}
+
+/* ---- Toast ---- */
+var toastTimer;
+function toast(msg){
+  var t=document.getElementById("toast");
+  t.innerHTML=IC.check+" "+msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove("show");},2600);
+}
+
+/* ---- Nav bar ---- */
+function renderNav(){
+  var nb=document.getElementById("navbar");
+  if(!state.logado){ nb.style.display="none"; nb.innerHTML=""; return; }
+  nb.style.display="flex";
+  var addActive=(state.screen==="cadastro")?" active":"";
+  var ciActive=(state.screen==="checkin"||state.screen==="checkin-confirm")?" active":"";
+  nb.innerHTML=
+    '<button class="nav-item'+addActive+'" onclick="openCadastro()">'+IC.plus+'<span>Novo</span></button>'
+    +'<button class="nav-item nav-center" onclick="nav(\'home\')"><span class="circle">'+IC.home+'</span><span class="lbl">Hoje</span></button>'
+    +'<button class="nav-item'+ciActive+'" onclick="nav(\'checkin\')">'+IC.checkin+'<span>Check-in</span></button>';
+}
+
+/* ---- Init ---- */
+document.getElementById("clock").title="Simular virada do dia";
+document.getElementById("clock").onclick=virarDia;
+pintarRelogio();
+render();
+updateBellDot();
+</script>
+</body>
+</html>
