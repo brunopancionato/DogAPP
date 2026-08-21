@@ -433,7 +433,7 @@
     <div class="wrap">
       <div class="eyebrow"><span class="num">00</span> O contexto <span class="rule"></span></div>
       <h2>Necessidade apontada</h2>
-      <p class="lede">Muitos cães, poucos cuidadores. Neste minuto: a <strong>Nina</strong> precisa do remédio das 14h e da ração certa <b>na porção certa</b>, e o <strong>Thor</strong> não pode cruzar com outro macho — e <b>uma pessoa só</b> tem que garantir tudo, ao mesmo tempo, sem trocar nada. É no vão entre <em>saber</em> e <em>fazer</em> que o cuidado escapa.</p>
+      <p class="lede">Uma creche para cães procura um aplicativo para gerenciar os pets que a frequentam. A dificuldade real: garantir que <strong>cada cão receba o cuidado certo</strong> (a comida certa, o remédio na hora e o reativo separado) sem nada escapar no corre-corre do dia.</p>
       <div class="needs">
         <div class="need"><span class="ic">🍽️</span><h3>Dieta específica</h3><p>O alimento correto, na <em>quantidade</em> e no horário corretos.</p></div>
         <div class="need"><span class="ic">💊</span><h3>Medicação na hora</h3><p>Remédio em horário determinado — sem margem para esquecer.</p></div>
@@ -452,7 +452,7 @@
           <h3>◆ Na análise · 8 sistemas dedicados + 2 referências</h3>
           <div class="tools">
             <div class="tool deep">MoeGo</div><div class="tool deep">Gingr</div><div class="tool deep">Sispet <span>BR</span></div>
-            <div class="tool">DatCog</div><div class="tool">Paw Partner</div><div class="tool">Revelation Pets</div>
+            <div class="tool">DatCog</div><div class="tool">Paw Partner</div><div class="tool deep">Revelation Pets</div>
             <div class="tool">Milisa <span>BR</span></div><div class="tool">DoggieDashboard</div>
             <div class="tool ref">brightwheel <span>ref.</span></div><div class="tool ref">Contorno manual <span>ref.</span></div>
           </div>
@@ -492,7 +492,7 @@
             <tr><th>Gingr <span class="flag deep">a fundo</span></th><td><span class="pa">~</span></td><td><span class="pa">~</span></td><td><span class="pa">~</span></td><td><span class="no">&#10007;</span></td></tr>
             <tr><th>DatCog</th><td><span class="pa">~</span></td><td><span class="pa">~</span></td><td><span class="pa">~</span></td><td><span class="pa">~</span></td></tr>
             <tr><th>Paw Partner</th><td><span class="pa">~</span></td><td><span class="pa">~</span></td><td><span class="pa">~</span></td><td><span class="un">?</span></td></tr>
-            <tr><th>Revelation Pets</th><td><span class="un">?</span></td><td><span class="un">?</span></td><td><span class="un">?</span></td><td><span class="un">?</span></td></tr>
+            <tr><th>Revelation Pets <span class="flag deep">a fundo</span></th><td><span class="pa">~</span></td><td><span class="pa">~</span></td><td><span class="un">?</span></td><td><span class="pa">~</span></td></tr>
             <tr><th>Sispet <span class="flag deep">BR · a fundo</span></th><td><span class="pa">~</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td><td><span class="un">?</span></td></tr>
             <tr><th>Milisa <span class="flag">BR</span></th><td><span class="pa">~</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td><td><span class="pa">~</span></td></tr>
             <tr><th>DoggieDashboard</th><td><span class="pa">~</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td></tr>
@@ -647,68 +647,35 @@
   <section class="slide dense" data-label="Métricas">
     <div class="wrap">
       <div class="eyebrow"><span class="num">07</span> Como sei que deu certo <span class="rule"></span></div>
-      <h2>Uma métrica por dor — e a lista do que eu ainda não sei.</h2>
-      <p class="lede">A promessa é "nada é esquecido". Então a métrica não pode ser adoção, engajamento nem tela aberta: tem que ser <b>cada uma das três dores acontecendo na hora</b>.</p>
+      <h2>Uma métrica-norte + três KPIs.</h2>
+      <p class="lede">A promessa é "nada é esquecido". Fujo de vaidade (downloads, tela aberta) e miro em <b>cuidado acontecendo</b> (alimentação, remédio e reatividade).</p>
+      <div class="need" style="margin-top:26px;border-color:var(--brand);background:var(--brand-tint)">
+        <h3><span class="nk">⭐ Métrica-norte · a promessa</span>% de cuidados do dia concluídos no horário</h3>
+        <p style="max-width:none">Um número só, composto das <b>três dores</b> — alimentação (alimento + porção + horário), medicação (dose na hora) e reativo isolado — sobre o total agendado para pets presentes. Denominador conhecido: vem do prontuário.</p>
+      </div>
       <div class="needs">
         <div class="need">
-          <span class="ic">🍽️</span>
-          <h3><span class="nk">Dor 1 · alimentação</span>Alimento, porção e horário</h3>
-          <p><b>% de tarefas de alimentação confirmadas</b> com o alimento, a porção e o horário corretos, sobre o total agendado para pets presentes. Denominador conhecido, vem do prontuário.</p>
+          <span class="ic">📲</span>
+          <h3><span class="nk">Guarda 1 · adoção</span>O operador usa?</h3>
+          <p>% de cuidados <b>confirmados pelo app</b>, não no papel ou de memória. Sem uso, o norte não vale nada — é a hipótese central do MVP.</p>
         </div>
         <div class="need">
-          <span class="ic">💊</span>
-          <h3><span class="nk">Dor 2 · medicação</span>Dose no horário</h3>
-          <p><b>% de doses confirmadas dentro da tolerância de horário.</b> Mesma base do prontuário — e a métrica de atrito: <b>adiamentos por alerta disparado</b>, que o protótipo já conta.</p>
+          <span class="ic">⚖️</span>
+          <h3><span class="nk">Guarda 2 · atrito</span>Vira incômodo?</h3>
+          <p><b>Adiamentos por alerta disparado.</b> Se sobe, o alarme tocou na hora errada ou virou ruído. O protótipo já conta disparos e adiamentos.</p>
         </div>
         <div class="need">
           <span class="ic">⚠️</span>
-          <h3><span class="nk">Dor 3 · reatividade</span>Identificado e isolado</h3>
-          <p><b>Pets reativos identificados e mantidos isolados</b> — e, do outro lado, <b>ocorrências de mistura acidental</b>, que puxam o indicador para baixo.</p>
+          <h3><span class="nk">Guarda 3 · segurança</span>Tende a zero?</h3>
+          <p><b>Mistura acidental do pet reativo</b> — a contra-métrica que precisa cair. Reatividade identificada e mantida isolada.</p>
         </div>
       </div>
-      <p class="land-note"><b>Confirmação não é execução.</b> O painel registra que alguém <b>confirmou</b> a tarefa dentro do horário e dos critérios esperados — não prova que a refeição ou a dose foi de fato administrada. A leitura honesta separa <b>confirmação</b> (o clique), <b>execução</b> (o ato) e <b>registro</b> (o dado que fica).</p>
-      <p class="land-note" style="border-color:var(--green)"><b>E o que a fatia já produz:</b> <b>intervenções preventivas registradas</b> passa a ser um indicador antecedente — a fatia não mede resultado ainda, mas já gera o dado que a "metria" vai ler.</p>
-      <p class="land-note"><b>O que ainda não sei — e não inventei:</b> qual a tolerância para uma dose contar como "no horário" (5, 10 ou 15 min — precisa de veterinário); se a Apple concede o <em>entitlement</em> de Critical Alert, sem o qual o iOS entrega uma promessa mais fraca que o Android; e como a creche recupera o acesso, já que a conta é única e não há e-mail de funcionário no escopo. As <b>12 histórias</b> carregam essas perguntas numeradas, com quem responde e se bloqueia ou não.</p>
-    </div>
-  </section>
-
-  <!-- COMO USEI IA -->
-  <section class="slide" data-label="Como usei IA">
-    <div class="wrap">
-      <div class="eyebrow"><span class="num">→</span> Como usei IA <span class="rule"></span></div>
-      <h2>IA em cada etapa — não só no código.</h2>
-      <p class="lede">A mesma IA foi pesquisadora, parceira de produto, projetista, programadora e revisora. Eu conduzi as decisões; ela acelerou tudo ao redor.</p>
-      <div class="ai-roles">
-        <div class="ai-role"><span class="ar-ic">🔍</span><div class="ar-t">Pesquisadora</div><div class="ar-d">Analisou 8 sistemas dedicados (3 a fundo) + 2 referências de fora — <b>creche infantil</b> e <b>lousa manual</b> — com <b>link e data</b> em cada afirmação.</div></div>
-        <div class="ai-role"><span class="ar-ic">🧠</span><div class="ar-t">Parceira de produto</div><div class="ar-d">Sparring da visão: o modelo pet-cêntrico, a triagem por coleira e a segurança em 3 direções.</div></div>
-        <div class="ai-role"><span class="ar-ic">🎨</span><div class="ar-t">Projetista</div><div class="ar-d">Sistema visual, mapa de telas e 12 histórias de usuário com premissas e perguntas em aberto.</div></div>
-        <div class="ai-role"><span class="ar-ic">💻</span><div class="ar-t">Programadora</div><div class="ar-d">O protótipo clicável inteiro, iterado dezenas de vezes até o detalhe (porção, horários, plural).</div></div>
-        <div class="ai-role"><span class="ar-ic">🥊</span><div class="ar-t">Advogada do diabo</div><div class="ar-d">Mandei que tentasse <b>derrubar minha leitura</b> do mercado. Derrubou em parte — e a correção virou slide.</div></div>
-        <div class="ai-role"><span class="ar-ic">🧪</span><div class="ar-t">Revisora</div><div class="ar-d">Revisou o próprio código, rodou os fluxos no navegador e manteve a documentação em dia.</div></div>
-      </div>
-      <div class="ai-split">
-        <div class="ai-side human"><div class="as-l">Eu decido</div><div class="as-d">Visão, priorização e o que fica <b>de fora</b> — o julgamento de produto e o "não".</div></div>
-        <div class="ai-side ai"><div class="as-l">A IA executa</div><div class="as-d">Pesquisa, síntese, código, iteração rápida e os <b>caminhos de falha</b> que é fácil esquecer.</div></div>
-      </div>
-      <p class="ai-take"><b>Ideia → pesquisa → protótipo → teste em horas, não semanas.</b> O ganho não é "a IA fez" — é explorar mais caminhos e validar mais rápido, sem terceirizar a decisão. E o detalhe que mais me convenceu: quando a central de ajuda de um concorrente bloqueou o acesso, o relatório veio com <b>"não consegui verificar — não estimei"</b> em vez de um número plausível. Confiabilidade é saber onde o dado acaba.</p>
-    </div>
-  </section>
-
-  <!-- PROCESS -->
-  <section class="slide" data-label="Processo">
-    <div class="wrap">
-      <div class="eyebrow"><span class="num">→</span> Meu processo <span class="rule"></span></div>
-      <h2>Antes de construir, entender. O caminho até a primeira fatia.</h2>
-      <p class="lede">Não parti da solução. Parti do mercado — para descobrir onde ele deixa a desejar e onde a gente pode ganhar a conversa.</p>
-      <div class="journey">
-        <div class="step"><span class="sn">01</span><div class="st">Discovery</div><div class="sd">O que já existe no mercado?</div></div>
-        <div class="step"><span class="sn">02</span><div class="st">Matriz</div><div class="sd">Mapear funcionalidade dos concorrentes.</div></div>
-        <div class="step"><span class="sn">03</span><div class="st">Brainstorm</div><div class="sd">O que ninguém cobre — e por quê.</div></div>
-        <div class="step hl"><span class="sn">04</span><div class="st">Insight</div><div class="sd">A triagem por cor.</div></div>
-        <div class="step"><span class="sn">05</span><div class="st">Visão</div><div class="sd">Aonde queremos chegar.</div></div>
-        <div class="step"><span class="sn">06</span><div class="st">1ª fatia <span class="soft" style="font-weight:600;font-size:12px">(MVP)</span></div><div class="sd">O menor recorte que cobre as três dores.</div></div>
-        <div class="step"><span class="sn">07</span><div class="st">Histórias</div><div class="sd">12 histórias com critérios de aceite, premissas e perguntas em aberto.</div></div>
-        <div class="step"><span class="sn">08</span><div class="st">Protótipo</div><div class="sd">Clicável e funcional — o fluxo inteiro, não a tela bonita.</div></div>
+      <div class="land-note" style="max-width:none">
+        <b>Risco:</b>
+        <ul class="neg-list" style="margin-top:8px">
+          <li><span class="mk">—</span> <b>confirmação ≠ execução</b> — o painel registra o clique dentro do horário e dos critérios, não prova que a refeição ou dose foi administrada.</li>
+          <li><span class="mk">—</span> <b>número de acidentes fica de fora</b> — raro demais, e a própria ferramenta muda a subnotificação.</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -720,13 +687,13 @@
       <h2>Cada etapa — e a IA que a acelerou.</h2>
       <p class="lede">O mesmo caminho até a tese, agora com o papel da IA em cada passo.</p>
       <div class="journey">
-        <div class="step"><span class="sn">01</span><div class="st">Discovery</div><div class="sd">O que já existe no mercado?</div><div class="sai"><span class="role">IA · Pesquisadora</span>Levantou 8 sistemas (3 a fundo) + 2 referências, com link e data.</div></div>
-        <div class="step"><span class="sn">02</span><div class="st">Matriz</div><div class="sd">Mapear a funcionalidade dos concorrentes.</div><div class="sai"><span class="role">IA · Pesquisadora</span>Organizou as capacidades numa matriz comparável.</div></div>
-        <div class="step"><span class="sn">03</span><div class="st">Brainstorm</div><div class="sd">O que ninguém cobre — e por quê.</div><div class="sai"><span class="role">IA · Advogada do diabo</span>Mandei derrubar minha leitura; caiu em parte — virou slide.</div></div>
-        <div class="step"><span class="sn">04</span><div class="st">Insight</div><div class="sd">A triagem por cor.</div><div class="sai"><span class="role">IA · Parceira de produto</span>Sparring do modelo pet-cêntrico e da triagem por coleira.</div></div>
+        <div class="step"><span class="sn">01</span><div class="st">Discovery</div><div class="sd">O que já existe no mercado?</div><div class="sai"><span class="role">IA · Pesquisadora</span>Um <b>subagente de design e pesquisa</b> levantou 8 sistemas (4 a fundo) + 2 referências, com link e data.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Matriz</div><div class="sd">Mapear a funcionalidade dos concorrentes.</div><div class="sai"><span class="role">IA · Pesquisadora</span>O mesmo <b>subagente de design e pesquisa</b> organizou as capacidades numa matriz comparável.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Brainstorm</div><div class="sd">O que ninguém cobre — e por quê.</div><div class="sai"><span class="role">IA · Advogada do diabo</span>Um <b>GPT de brainstorm</b> levantou hipóteses; mandei derrubar minha leitura — caiu em parte, virou slide.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Insight</div><div class="sd">A triagem por cor.</div><div class="sai"><span class="role">IA · Parceira de produto</span>Junto ao <b>GPT de brainstorm</b>; sparring do modelo pet-cêntrico e da triagem por coleira.</div></div>
         <div class="step"><span class="sn">05</span><div class="st">Visão</div><div class="sd">Aonde queremos chegar.</div><div class="sai"><span class="role">IA · Parceira de produto</span>Refinou a promessa e a segurança em 3 direções.</div></div>
         <div class="step"><span class="sn">06</span><div class="st">1ª fatia <span class="soft" style="font-weight:600;font-size:12px">(MVP)</span></div><div class="sd">O menor recorte que cobre as três dores.</div><div class="sai"><span class="role">IA · Parceira de produto</span>Ajudou a priorizar e a definir o que fica de fora.</div></div>
-        <div class="step"><span class="sn">07</span><div class="st">Histórias</div><div class="sd">12 histórias com critérios de aceite e perguntas.</div><div class="sai"><span class="role">IA · Projetista</span>Sistema visual, mapa de telas e as 12 histórias.</div></div>
+        <div class="step"><span class="sn">07</span><div class="st">Histórias</div><div class="sd">12 histórias com critérios de aceite e perguntas.</div><div class="sai"><span class="role">IA · Projetista + PM</span>Sistema visual e mapa de telas; uma <b>skill de PM</b> escreveu e revisou as 12 histórias e criou as regras.</div></div>
         <div class="step"><span class="sn">08</span><div class="st">Protótipo</div><div class="sd">Clicável e funcional — o fluxo inteiro.</div><div class="sai"><span class="role">IA · Programadora + Revisora</span>Montou o protótipo, iterou até o detalhe, rodou os testes e revisou os fluxos.</div></div>
       </div>
       <div class="ai-split">
@@ -741,18 +708,20 @@
   <section class="slide" data-label="Adiante">
     <div class="wrap">
       <div class="eyebrow"><span class="num">→</span> Adiante <span class="rule"></span></div>
-      <h2>A fatia entrega o coração — o nome entrega o resto.</h2>
+      <h2>A fatia entrega o cuidado; as próximas, a "metria" da gestão.</h2>
       <div class="horizons">
         <div class="horizon now">
           <span class="hn">Horizonte 1 · hoje</span>
-          <div class="ht">A primeira fatia</div>
-          <div class="hsub">as três dores do dia</div>
+          <div class="ht">A primeira fatia <span class="soft" style="font-weight:600;font-size:12px">(MVP)</span></div>
+          <div class="hsub">o ciclo do cuidado no dia</div>
           <ul>
-            <li><span class="mk">✓</span> <span>Prontuário &amp; coleira derivada — <b>identificação visual</b></span></li>
-            <li><span class="mk">✓</span> Painel do dia por cor</li>
+            <li><span class="mk">✓</span> <span><b>Prontuário</b> — dieta c/ porção, medicação, reatividade, vários tutores</span></li>
+            <li><span class="mk">✓</span> <span><b>Check-in</b> → coleira derivada (identificação visual)</span></li>
+            <li><span class="mk">✓</span> <span><b>Painel do dia</b> por cor — reativos no topo</span></li>
             <li><span class="mk">✓</span> <span><b>Alimentação</b> — alimento, porção e horário</span></li>
-            <li><span class="mk">✓</span> <span><b>Medicação</b> — dose no horário + alerta</span></li>
+            <li><span class="mk">✓</span> <span><b>Medicação</b> — dose no horário + alerta que insiste</span></li>
             <li><span class="mk">✓</span> <span><b>Isolamento</b> do pet reativo</span></li>
+            <li><span class="mk">✓</span> <span><b>Check-out, ocorrências</b> e virada do dia — com histórico</span></li>
           </ul>
         </div>
         <div class="horizon">
@@ -780,7 +749,7 @@
           </ul>
         </div>
       </div>
-      <p class="close-line">Primeiro garantir que nada é esquecido. Depois, tudo o mais.</p>
+      <p class="close-line">Primeiro, garantir que nada é esquecido. Depois, tudo o mais.</p>
     </div>
   </section>
 
